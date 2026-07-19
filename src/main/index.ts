@@ -1,9 +1,10 @@
 import { join } from 'path'
-import { app, BrowserWindow, shell } from 'electron'
+import { app, BrowserWindow, session, shell } from 'electron'
 import { createStore } from './store'
 import { KeyVault } from './security/keyVault'
 import { safeStorageEncryptor } from './security/safeStorageEncryptor'
 import { ConversationEngine, type EngineEmitter } from './engine/conversationEngine'
+import { electronExporter } from './export/electronExporter'
 import { registerIpcHandlers } from './ipc/register'
 
 // Main process. Phase 1 wires the SQLite store, the secure key vault, the
@@ -43,7 +44,26 @@ function createWindow(): void {
   }
 }
 
+// Content Security Policy for the packaged app. The renderer makes no network
+// requests of its own (all LLM traffic goes through the main process over IPC),
+// so connect-src can be locked to self. Applied only to the file:// production
+// load — dev keeps Vite's own policy so HMR works.
+function applyProductionCsp(): void {
+  if (process.env['ELECTRON_RENDERER_URL']) return
+  session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+    callback({
+      responseHeaders: {
+        ...details.responseHeaders,
+        'Content-Security-Policy': [
+          "default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'"
+        ]
+      }
+    })
+  })
+}
+
 app.whenReady().then(() => {
+  applyProductionCsp()
   const userData = app.getPath('userData')
   const store = createStore(join(userData, 'hatchling.db'))
   const keyVault = new KeyVault(join(userData, 'keys.json'), safeStorageEncryptor)
@@ -60,6 +80,7 @@ app.whenReady().then(() => {
     store,
     keyVault,
     engine,
+    exporter: electronExporter,
     appVersion: app.getVersion(),
     dataPath: userData
   })

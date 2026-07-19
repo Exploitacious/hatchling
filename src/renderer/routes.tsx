@@ -1,11 +1,29 @@
+import { lazy } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import { AppShell } from '@renderer/components/layout/AppShell'
-import { SessionLibraryScreen } from '@renderer/screens/SessionLibraryScreen'
-import { SettingsScreen } from '@renderer/screens/SettingsScreen'
-import { TemplateLibraryScreen } from '@renderer/screens/TemplateLibraryScreen'
-import { TemplateEditorScreen } from '@renderer/screens/TemplateEditorScreen'
-import { ChatScreen } from '@renderer/screens/ChatScreen'
-import { ResultsScreen } from '@renderer/screens/ResultsScreen'
+
+// Screens are code-split so the initial bundle stays small and heavy deps
+// (the CodeMirror editor, the Markdown renderer) load only with their route.
+const SessionLibraryScreen = lazy(() =>
+  import('@renderer/screens/SessionLibraryScreen').then((m) => ({ default: m.SessionLibraryScreen }))
+)
+const SettingsScreen = lazy(() =>
+  import('@renderer/screens/SettingsScreen').then((m) => ({ default: m.SettingsScreen }))
+)
+const TemplateLibraryScreen = lazy(() =>
+  import('@renderer/screens/TemplateLibraryScreen').then((m) => ({
+    default: m.TemplateLibraryScreen
+  }))
+)
+const TemplateEditorScreen = lazy(() =>
+  import('@renderer/screens/TemplateEditorScreen').then((m) => ({ default: m.TemplateEditorScreen }))
+)
+const ChatScreen = lazy(() =>
+  import('@renderer/screens/ChatScreen').then((m) => ({ default: m.ChatScreen }))
+)
+const ResultsScreen = lazy(() =>
+  import('@renderer/screens/ResultsScreen').then((m) => ({ default: m.ResultsScreen }))
+)
 
 export function AppRoutes() {
   return (

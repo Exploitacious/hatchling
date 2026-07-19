@@ -2,12 +2,16 @@ import type { IpcHandlers } from '@shared/ipc'
 import type { Store } from '../store'
 import type { KeyVault } from '../security/keyVault'
 import type { ConversationEngine } from '../engine/conversationEngine'
+import type { Exporter } from '../export/exporter'
+import { sanitizeName } from '../export/exporter'
+import { buildTranscript } from '../export/transcript'
 import { createProvider } from '../providers/factory'
 
 export interface IpcContext {
   store: Store
   keyVault: KeyVault
   engine: ConversationEngine
+  exporter: Exporter
   appVersion: string
   dataPath: string
 }
@@ -15,8 +19,6 @@ export interface IpcContext {
 function messageOf(err: unknown): string {
   return err instanceof Error ? err.message : String(err)
 }
-
-const PHASE4 = 'File export is available in a later build (Phase 4).'
 
 /**
  * Build the full IPC handler map. Pure and free of any Electron import so it can
@@ -90,14 +92,29 @@ export function buildHandlers(ctx: IpcContext): IpcHandlers {
     'files:listBySession': ({ sessionId }) => store.files.listBySession(sessionId),
     'files:get': ({ id }) => store.files.get(id),
     'files:update': ({ id, content }) => store.files.updateContent(id, content),
-    'files:export': () => {
-      throw new Error(PHASE4)
+    'files:export': ({ id }) => {
+      const file = store.files.get(id)
+      if (!file) throw new Error('File not found')
+      return ctx.exporter.saveFile({ filename: file.filename, content: file.content })
     },
-    'files:exportAll': () => {
-      throw new Error(PHASE4)
+    'files:exportAll': ({ sessionId, mode }) => {
+      const session = store.sessions.get(sessionId)
+      const files = store.files
+        .listBySession(sessionId, false)
+        .map((f) => ({ filename: f.filename, content: f.content }))
+      if (files.length === 0) throw new Error('There are no files to export.')
+      if (mode === 'zip') {
+        return ctx.exporter.saveZip(`hatchling-${sanitizeName(session?.name ?? 'hatch')}.zip`, files)
+      }
+      return ctx.exporter.saveToFolder(files)
     },
-    'files:exportTranscript': () => {
-      throw new Error(PHASE4)
+    'files:exportTranscript': ({ sessionId }) => {
+      const session = store.sessions.get(sessionId)
+      const transcript = buildTranscript(store.messages.listBySession(sessionId))
+      return ctx.exporter.saveText(
+        `hatchling-transcript-${sanitizeName(session?.name ?? 'hatch')}.md`,
+        transcript
+      )
     },
 
     'llm:listModels': async ({ providerId }) => {

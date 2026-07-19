@@ -39,6 +39,13 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   detects hatch completion (BOOTSTRAP.md dismissal), and resumes after restart.
 - The chat interface is wired live to the engine over IPC (streaming tokens,
   real-time file panel, token/context status) — no mock data.
+- Results screen on real session data: a file gallery, an in-app viewer with a
+  raw/rendered toggle and inline editing (persisted), and a transcript view.
+- File export via native dialogs: individual download, Download All (.zip),
+  Save to folder, and Markdown transcript export.
+- Polish: route-based code-splitting, global keyboard shortcuts (New Hatch,
+  Settings), a render error boundary, a production Content-Security-Policy, and
+  a multi-OS release workflow (`.github/workflows/release.yml`).
 - GitHub Actions CI: lint, typecheck, test (Vitest), and build on every push
   and PR.
 - MIT license, contributor guide (`CLAUDE.md`), and architecture spec
