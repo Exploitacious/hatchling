@@ -4,6 +4,8 @@ import { newId } from '../util/id'
 import { nowIso } from '../util/time'
 
 export interface NewMessageRecord {
+  /** Optional explicit id — lets the engine reuse a streamed message's id. */
+  id?: string
   sessionId: string
   role: MessageRole
   content: string
@@ -49,7 +51,7 @@ export class MessagesRepository {
   constructor(private readonly db: Db) {}
 
   create(rec: NewMessageRecord): Message {
-    const id = newId()
+    const id = rec.id ?? newId()
     this.db
       .prepare(
         `INSERT INTO messages

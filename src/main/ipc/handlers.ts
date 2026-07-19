@@ -1,11 +1,13 @@
 import type { IpcHandlers } from '@shared/ipc'
 import type { Store } from '../store'
 import type { KeyVault } from '../security/keyVault'
+import type { ConversationEngine } from '../engine/conversationEngine'
 import { createProvider } from '../providers/factory'
 
 export interface IpcContext {
   store: Store
   keyVault: KeyVault
+  engine: ConversationEngine
   appVersion: string
   dataPath: string
 }
@@ -14,7 +16,6 @@ function messageOf(err: unknown): string {
   return err instanceof Error ? err.message : String(err)
 }
 
-const PHASE3 = 'The conversation engine is available in a later build (Phase 3).'
 const PHASE4 = 'File export is available in a later build (Phase 4).'
 
 /**
@@ -106,17 +107,12 @@ export function buildHandlers(ctx: IpcContext): IpcHandlers {
       return createProvider(provider, key).listModels()
     },
 
-    'chat:start': () => {
-      throw new Error(PHASE3)
-    },
-    'chat:sendUserMessage': () => {
-      throw new Error(PHASE3)
-    },
-    'chat:complete': () => {
-      throw new Error(PHASE3)
-    },
-    'chat:abort': () => {
-      throw new Error(PHASE3)
+    'chat:start': ({ sessionId }) => ctx.engine.start(sessionId),
+    'chat:sendUserMessage': ({ sessionId, content }) =>
+      ctx.engine.sendUserMessage(sessionId, content),
+    'chat:complete': ({ sessionId }) => ctx.engine.complete(sessionId),
+    'chat:abort': ({ sessionId }) => {
+      ctx.engine.abort(sessionId)
     }
   }
 }

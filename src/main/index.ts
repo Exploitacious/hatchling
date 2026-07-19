@@ -3,6 +3,7 @@ import { app, BrowserWindow, shell } from 'electron'
 import { createStore } from './store'
 import { KeyVault } from './security/keyVault'
 import { safeStorageEncryptor } from './security/safeStorageEncryptor'
+import { ConversationEngine, type EngineEmitter } from './engine/conversationEngine'
 import { registerIpcHandlers } from './ipc/register'
 
 // Main process. Phase 1 wires the SQLite store, the secure key vault, the
@@ -46,9 +47,19 @@ app.whenReady().then(() => {
   const userData = app.getPath('userData')
   const store = createStore(join(userData, 'hatchling.db'))
   const keyVault = new KeyVault(join(userData, 'keys.json'), safeStorageEncryptor)
+
+  // Broadcast engine events to every open window.
+  const emit: EngineEmitter = (event, payload) => {
+    for (const window of BrowserWindow.getAllWindows()) {
+      window.webContents.send(event, payload)
+    }
+  }
+  const engine = new ConversationEngine(store, keyVault, emit)
+
   registerIpcHandlers({
     store,
     keyVault,
+    engine,
     appVersion: app.getVersion(),
     dataPath: userData
   })

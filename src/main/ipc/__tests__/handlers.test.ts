@@ -6,6 +6,7 @@ import { randomUUID } from 'node:crypto'
 import { buildHandlers, type IpcContext } from '../handlers'
 import { createStore } from '../../store'
 import { KeyVault, type Encryptor } from '../../security/keyVault'
+import { ConversationEngine } from '../../engine/conversationEngine'
 import { BUILTIN_TEMPLATE_ID } from '@shared/constants'
 
 const fakeEncryptor: Encryptor = {
@@ -22,9 +23,12 @@ afterAll(() => {
 function makeCtx(): IpcContext {
   const file = join(tmpdir(), `hatchling-h-${randomUUID()}.json`)
   tempFiles.push(file)
+  const store = createStore(':memory:')
+  const keyVault = new KeyVault(file, fakeEncryptor)
   return {
-    store: createStore(':memory:'),
-    keyVault: new KeyVault(file, fakeEncryptor),
+    store,
+    keyVault,
+    engine: new ConversationEngine(store, keyVault, () => {}),
     appVersion: '0.1.0',
     dataPath: '/data'
   }
@@ -77,9 +81,8 @@ describe('IPC handlers', () => {
     expect(models.length).toBeGreaterThan(0)
   })
 
-  it('engine and export channels report the phase they arrive in', () => {
+  it('export channels report the phase they arrive in', () => {
     const h = buildHandlers(makeCtx())
-    expect(() => h['chat:start']({ sessionId: 'x' })).toThrow(/Phase 3/)
     expect(() => h['files:export']({ id: 'x' })).toThrow(/Phase 4/)
   })
 

@@ -32,6 +32,13 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   library and a Markdown editor with live preview (CodeMirror), Session library
   with search/filter, the hatching Chat interface, and the Results gallery.
 - A fully wired New Hatch modal with dynamic model lists.
+- Conversation engine (main process): an event-driven state machine that builds
+  the system prompt (preamble + frozen template), streams the model, executes
+  the write/read/delete tools against the in-memory file registry, applies an
+  inline code-block fallback for models that don't call tools, tracks tokens,
+  detects hatch completion (BOOTSTRAP.md dismissal), and resumes after restart.
+- The chat interface is wired live to the engine over IPC (streaming tokens,
+  real-time file panel, token/context status) — no mock data.
 - GitHub Actions CI: lint, typecheck, test (Vitest), and build on every push
   and PR.
 - MIT license, contributor guide (`CLAUDE.md`), and architecture spec
