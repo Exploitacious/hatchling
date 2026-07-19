@@ -26,6 +26,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - IPC handler registry implementing the provider, template, session, message,
   and file channels; wired into the main process.
 - Renderer IPC client and formatting utilities.
+- Full UI (React + Tailwind): app shell with routing, a design-system component
+  kit, and CSS-variable theming (dark default + light toggle).
+- Screens: Settings (provider configuration + default-model picker), Template
+  library and a Markdown editor with live preview (CodeMirror), Session library
+  with search/filter, the hatching Chat interface, and the Results gallery.
+- A fully wired New Hatch modal with dynamic model lists.
 - GitHub Actions CI: lint, typecheck, test (Vitest), and build on every push
   and PR.
 - MIT license, contributor guide (`CLAUDE.md`), and architecture spec
