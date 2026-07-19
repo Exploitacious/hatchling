@@ -1,0 +1,24 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="60%" r="46%">
+      <stop offset="0%" stop-color="#d4a017" stop-opacity="0.6" />
+      <stop offset="100%" stop-color="#d4a017" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <rect width="1024" height="1024" rx="224" fill="#0a0a0a" />
+  <ellipse cx="512" cy="560" rx="300" ry="360" fill="url(#glow)" />
+  <path
+    d="M512 180 C 356 180 296 468 296 612 a216 216 0 0 0 432 0 C 728 468 668 180 512 180 Z"
+    fill="#141414"
+    stroke="#d4a017"
+    stroke-width="28"
+  />
+  <path
+    d="M398 540 L470 496 L438 584 L522 536 L490 628 L566 582"
+    fill="none"
+    stroke="#e0b12e"
+    stroke-width="22"
+    stroke-linejoin="round"
+    stroke-linecap="round"
+  />
+</svg>
