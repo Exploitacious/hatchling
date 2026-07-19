@@ -1,0 +1,41 @@
+# Secrets — never commit real keys. Hatchling stores keys in the OS keychain,
+# not in files, but keep these patterns as a safety net.
+.env
+.env.local
+*.key
+credentials.*
+
+# Dependencies
+node_modules/
+
+# Build output
+out/
+out-tsc/
+dist/
+release/
+*.tsbuildinfo
+
+# Test / coverage
+coverage/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editors / IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Agent tooling
+.claude/
+
+# Logs
+*.log
+npm-debug.log*
+
+# NOTE: package-lock.json IS committed (this is an application, not a library —
+# reproducible installs via `npm ci` in CI depend on it).

@@ -1,0 +1,119 @@
+# Hatchling
+
+> **This is a public repository.** Do not commit API keys, passwords, tokens,
+> internal URLs, or any credentials. Hatchling stores API keys in your OS
+> keychain, never in the repo — keep it that way.
+
+A local-first desktop app for creating AI agent personalities through
+conversation. You chat with a model, and as you talk it writes the personality
+files — `SOUL.md`, `IDENTITY.md`, `USER.md`, and whatever else the two of you
+decide the agent needs. When you're done, you export the files and take them
+wherever your agent lives.
+
+It's not a chatbot. It's a personality forge.
+
+---
+
+## Why
+
+Some agent frameworks bury this "hatching" ritual inside a terminal wizard that
+needs a full install, a running gateway, and careful workspace state. But the
+actual magic — a conversation that produces a coherent set of personality files
+— is model-agnostic and infrastructure-independent. Hatchling extracts that
+magic into a clean, cross-platform app that talks to whatever model you point it
+at and hands you plain markdown files at the end.
+
+## How it works
+
+1. **Pick a template** — ships with the classic "Wake up, my friend!" bootstrap
+   ritual, or write your own.
+2. **Pick a model** — any provider you've configured, or the built-in offline
+   **Mock** model that needs no key.
+3. **Chat** — the bot asks who it is and who you are, and writes files as you go.
+   A live panel shows each file as it's created or updated.
+4. **Review & edit** — read and tweak the generated files in-app.
+5. **Export** — download individual files, a `.zip`, or save the whole set to a
+   folder. They're plain markdown; drop them into any agent framework.
+
+## Provider-agnostic by design
+
+Hatchling has no allegiance to any single vendor. Every backend reduces to one
+of three adapter shapes plus an offline mock:
+
+| Shape               | Covers                                                        | Needs a key? |
+| ------------------- | ------------------------------------------------------------ | ------------ |
+| **Anthropic**       | Claude models via the Messages API                           | Yes          |
+| **OpenAI-compatible** | OpenAI, OpenRouter, a self-hosted gateway, any OpenAI-shaped endpoint (set the base URL) | Yes |
+| **Ollama**          | Local models on your machine                                 | No           |
+| **Mock (offline)**  | A built-in deterministic model — try the whole app with no key or network | No |
+
+Model lists are fetched live from whatever you connect — no hardcoded model
+names, no curated "use this one" badges. If a provider reports a model, you can
+pick it.
+
+## Local-first, always
+
+- No backend servers, no telemetry, no account.
+- API keys live in your OS keychain (via Electron `safeStorage`), never in
+  plaintext or the renderer process.
+- Sessions, templates, and generated files live in a local SQLite database.
+- Files stay in memory during a hatch and only touch disk when you export.
+
+## Requirements
+
+- **Node.js 20+** and **npm** (for building from source).
+- A native toolchain for `better-sqlite3` (build-essential / Xcode CLT / MSVC
+  build tools) — only needed when installing from source.
+
+## Getting started (from source)
+
+```bash
+git clone https://github.com/Exploitacious/hatchling.git
+cd hatchling
+npm install
+
+# Rebuild the native SQLite module against Electron's ABI (first run only)
+npm run rebuild:electron
+
+# Launch the app in development
+npm run dev
+```
+
+No environment file is required — provider keys are entered in the app's
+Settings screen and stored in your keychain. Start with the **Mock (offline)**
+provider to try a full hatch with zero setup.
+
+### Building installers
+
+```bash
+npm run package          # current platform
+npm run package:linux    # AppImage + deb
+npm run package:win      # NSIS installer + portable
+npm run package:mac      # dmg
+```
+
+Installers are written to `release/`.
+
+## Development
+
+| Command                   | What it does                                  |
+| ------------------------- | --------------------------------------------- |
+| `npm run dev`             | Run the app with hot reload                   |
+| `npm run build`           | Bundle main, preload, and renderer            |
+| `npm run typecheck`       | TypeScript check (main + renderer)            |
+| `npm run lint`            | ESLint                                        |
+| `npm test`                | Run the Vitest suite                          |
+| `npm run test:coverage`   | Tests with coverage                           |
+| `npm run package`         | Build installers for the current platform     |
+
+See [`CLAUDE.md`](CLAUDE.md) for conventions and [`ARCHITECTURE.md`](ARCHITECTURE.md)
+for the system design.
+
+## Tech stack
+
+Electron · React · TypeScript · Vite (via electron-vite) · Tailwind CSS ·
+SQLite (better-sqlite3) · Zustand · CodeMirror · packaged with electron-builder.
+
+## License
+
+[MIT](LICENSE).

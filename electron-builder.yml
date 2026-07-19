@@ -1,0 +1,47 @@
+appId: com.exploitacious.hatchling
+productName: Hatchling
+copyright: Copyright (c) 2026 Exploitacious
+
+directories:
+  buildResources: build
+  output: release
+
+# Only the bundled output + manifest ship in the app. Source, tests, and
+# dev config are excluded automatically by electron-builder defaults.
+files:
+  - out/**/*
+  - package.json
+
+# Native modules (better-sqlite3) must stay unpacked so their .node binaries
+# are loadable from the asar-packed app.
+asarUnpack:
+  - '**/*.node'
+
+# better-sqlite3 is a native dependency and is rebuilt against the Electron ABI
+# at package time.
+npmRebuild: true
+
+win:
+  target:
+    - nsis
+    - portable
+  artifactName: ${productName}-${version}-${arch}.${ext}
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+
+mac:
+  target:
+    - dmg
+  category: public.app-category.developer-tools
+  artifactName: ${productName}-${version}-${arch}.${ext}
+
+linux:
+  target:
+    - AppImage
+    - deb
+  category: Development
+  maintainer: Exploitacious
+  artifactName: ${productName}-${version}-${arch}.${ext}
