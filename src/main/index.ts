@@ -1,9 +1,13 @@
 import { join } from 'path'
 import { app, BrowserWindow, shell } from 'electron'
+import { createStore } from './store'
+import { KeyVault } from './security/keyVault'
+import { safeStorageEncryptor } from './security/safeStorageEncryptor'
+import { registerIpcHandlers } from './ipc/register'
 
-// Scaffold main process. Phase 1 (Foundation) adds the SQLite layer, secure key
-// storage, provider adapters, and the IPC handler registry; phase 3 adds the
-// conversation engine. For now this creates the window and loads the renderer.
+// Main process. Phase 1 wires the SQLite store, the secure key vault, the
+// provider factory, and the IPC handler registry. Phase 3 adds the conversation
+// engine (the chat:* channels).
 
 function createWindow(): void {
   const window = new BrowserWindow({
@@ -39,6 +43,16 @@ function createWindow(): void {
 }
 
 app.whenReady().then(() => {
+  const userData = app.getPath('userData')
+  const store = createStore(join(userData, 'hatchling.db'))
+  const keyVault = new KeyVault(join(userData, 'keys.json'), safeStorageEncryptor)
+  registerIpcHandlers({
+    store,
+    keyVault,
+    appVersion: app.getVersion(),
+    dataPath: userData
+  })
+
   createWindow()
 
   app.on('activate', () => {
