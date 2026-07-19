@@ -6,19 +6,21 @@ module.exports = {
     extend: {
       colors: {
         // The hatching palette — near-black surfaces, warm amber accent
-        // (the "egg cracking open" metaphor). Used across the whole UI.
+        // (the "egg cracking open" metaphor). Values are CSS variables (RGB
+        // channels) defined in index.css so the light/dark theme is a swap and
+        // Tailwind opacity modifiers (e.g. bg-hatch-accent/15) work.
         hatch: {
-          bg: '#0a0a0a',
-          surface: '#141414',
-          'surface-2': '#1c1c1c',
-          border: '#262626',
-          text: '#e5e5e5',
-          muted: '#8a8a8a',
-          accent: '#d4a017',
-          'accent-hover': '#e0b12e',
-          success: '#3fb950',
-          warning: '#d29922',
-          danger: '#f85149'
+          bg: 'rgb(var(--hatch-bg) / <alpha-value>)',
+          surface: 'rgb(var(--hatch-surface) / <alpha-value>)',
+          'surface-2': 'rgb(var(--hatch-surface-2) / <alpha-value>)',
+          border: 'rgb(var(--hatch-border) / <alpha-value>)',
+          text: 'rgb(var(--hatch-text) / <alpha-value>)',
+          muted: 'rgb(var(--hatch-muted) / <alpha-value>)',
+          accent: 'rgb(var(--hatch-accent) / <alpha-value>)',
+          'accent-hover': 'rgb(var(--hatch-accent-hover) / <alpha-value>)',
+          success: 'rgb(var(--hatch-success) / <alpha-value>)',
+          warning: 'rgb(var(--hatch-warning) / <alpha-value>)',
+          danger: 'rgb(var(--hatch-danger) / <alpha-value>)'
         }
       },
       fontFamily: {
