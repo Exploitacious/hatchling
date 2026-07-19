@@ -185,7 +185,10 @@ export function TemplateLibraryScreen() {
             tabIndex={0}
             onClick={() => navigate('/templates/new')}
             onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') navigate('/templates/new')
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault()
+                navigate('/templates/new')
+              }
             }}
             className="flex min-h-[9.5rem] flex-col items-center justify-center gap-2 border-dashed text-hatch-muted"
           >

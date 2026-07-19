@@ -457,7 +457,13 @@ function ModelsTab() {
         ) : models.length > 0 ? (
           <Select
             id="models-model"
-            value={defaultProviderId === providerId ? defaultModel ?? '' : ''}
+            value={
+              defaultProviderId === providerId &&
+              defaultModel &&
+              models.some((m) => m.id === defaultModel)
+                ? defaultModel
+                : ''
+            }
             onChange={(e) => chooseModel(e.target.value)}
           >
             <option value="" disabled>

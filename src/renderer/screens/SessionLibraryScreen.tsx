@@ -194,7 +194,10 @@ export function SessionLibraryScreen() {
               tabIndex={0}
               onClick={() => openSession(session)}
               onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') openSession(session)
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault()
+                  openSession(session)
+                }
               }}
               className="group relative flex flex-col gap-3 p-4"
             >
@@ -263,7 +266,7 @@ export function SessionLibraryScreen() {
             value={renameValue}
             onChange={(e) => setRenameValue(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === 'Enter') void onConfirmRename()
+              if (e.key === 'Enter' && !renaming) void onConfirmRename()
             }}
           />
         </Field>
