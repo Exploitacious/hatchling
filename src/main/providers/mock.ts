@@ -9,7 +9,6 @@ import type {
   ToolCall,
   TokenUsage
 } from '@shared/types'
-import { LlmError } from './errors'
 
 // A deterministic, offline model. It runs a scripted hatch — greet, then write
 // IDENTITY.md, USER.md, and SOUL.md, then delete BOOTSTRAP.md — so the whole
@@ -81,7 +80,7 @@ export class MockProvider implements LlmProvider {
 
   async sendMessage(params: SendMessageParams): Promise<LlmResponse> {
     if (params.signal?.aborted) {
-      throw new LlmError('network', 'Request aborted')
+      return { content: '', toolCalls: [], usage: { input: 0, output: 0, total: 0 }, finishReason: 'aborted' }
     }
 
     const { messages } = params

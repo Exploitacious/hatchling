@@ -16,7 +16,18 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   template, the virtual-workspace preamble, the three file-tool definitions, and
   provider-shape metadata.
 - Typed preload bridge exposing `window.hatchling` under context isolation.
-- GitHub Actions CI: typecheck, test (Vitest), and build on every push and PR.
+- SQLite persistence: versioned schema + migrations, built-in template seed, and
+  five repositories (templates, providers, sessions, messages, files) with
+  soft-delete/resurrect and cascade.
+- Encrypted API-key vault via Electron `safeStorage` (injectable for testing).
+- Four LLM providers behind one interface: Anthropic, OpenAI-compatible, Ollama,
+  and an offline deterministic mock (the test backbone). Dynamic model lists,
+  streaming, tool calls, and normalized error/abort handling.
+- IPC handler registry implementing the provider, template, session, message,
+  and file channels; wired into the main process.
+- Renderer IPC client and formatting utilities.
+- GitHub Actions CI: lint, typecheck, test (Vitest), and build on every push
+  and PR.
 - MIT license, contributor guide (`CLAUDE.md`), and architecture spec
   (`ARCHITECTURE.md`).
 
