@@ -6,6 +6,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-07-19
+
+First complete release: a working, end-to-end personality forge.
+
 ### Added
 
 - Project scaffold: Electron + Vite + React + TypeScript (electron-vite build,
@@ -51,4 +55,5 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - MIT license, contributor guide (`CLAUDE.md`), and architecture spec
   (`ARCHITECTURE.md`).
 
-[Unreleased]: https://github.com/Exploitacious/hatchling
+[Unreleased]: https://github.com/Exploitacious/hatchling/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/Exploitacious/hatchling/releases/tag/v0.1.0
