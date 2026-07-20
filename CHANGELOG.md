@@ -68,9 +68,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - Emoji and symbols now render on every platform. The app bundles Noto Color
-  Emoji and Noto Sans Symbols 2 (unicode-range subsets, loaded only as needed)
-  and the font stacks list platform emoji fonts first — minimal Linux/WSL
-  installs with no system emoji font previously showed placeholder squares.
+  Emoji (the vendored **COLRv1** build — Chromium cannot render the SVG-in-OT
+  flavor some packages ship, which still produced placeholder squares) and Noto
+  Sans Symbols 2, as unicode-range subsets loaded only as needed; font stacks
+  list platform emoji fonts first. Verified by rendering the glyph in Electron
+  on a system with no emoji fonts installed.
 
 - The chat composer now grows with what you type (up to ~14 lines, then
   scrolls internally) instead of staying a fixed 2-3 lines.
