@@ -42,12 +42,16 @@ export function NewHatchModal() {
   const [modelsError, setModelsError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
 
-  // Load data and reset the form each time the modal opens.
+  // Load data and reset the form each time the modal opens. Resetting
+  // `submitting` here matters: the component never unmounts (it renders null
+  // when closed), so a successful start would otherwise leave the flag stuck
+  // true and the Start button disabled-with-spinner on every later open.
   useEffect(() => {
     if (!open) return
     void loadProviders()
     void loadTemplates()
     setName(defaultSessionName())
+    setSubmitting(false)
   }, [open, loadProviders, loadTemplates])
 
   // Seed default template + provider once the lists are present.

@@ -21,6 +21,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- The Start Hatching button no longer stays stuck on a spinner when opening the
+  New Hatch dialog after a previous successful start — the submit flag leaked
+  across opens because the dialog component never unmounts.
 - Provider keys could not be saved on systems without an OS keychain — the vault
   hard-failed with "OS secure storage is unavailable." It now falls back to the
   app-managed key store instead of blocking.

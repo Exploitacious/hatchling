@@ -98,7 +98,9 @@ provider to try a full hatch with zero setup.
 > failed` (no hardware video acceleration — Electron falls back to software) and
 > `org.freedesktop.portal.FileChooser` D-Bus errors (no desktop portal — Electron
 > falls back to the GTK file dialog) are expected on minimal/headless desktops
-> and don't affect the app.
+> and don't affect the app. Under WSLg you may also see `Frame latency is
+> negative` (compositor clock skew) and `atom_cache` lines about
+> `application/vnd.portal.*` — equally harmless.
 
 ### Building installers
 
