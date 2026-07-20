@@ -67,6 +67,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- Emoji and symbols now render on every platform. The app bundles Noto Color
+  Emoji and Noto Sans Symbols 2 (unicode-range subsets, loaded only as needed)
+  and the font stacks list platform emoji fonts first — minimal Linux/WSL
+  installs with no system emoji font previously showed placeholder squares.
+
 - The chat composer now grows with what you type (up to ~14 lines, then
   scrolls internally) instead of staying a fixed 2-3 lines.
 - The Start Hatching button no longer stays stuck on a spinner when opening the
