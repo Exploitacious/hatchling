@@ -73,6 +73,16 @@ doesn't support fail with the provider's own error message, not silently.
 - Sessions, templates, and generated files live in a local SQLite database.
 - Files stay in memory during a hatch and only touch disk when you export.
 
+## Download
+
+Grab the installer for your platform from the
+[**Releases page**](https://github.com/Exploitacious/hatchling/releases) —
+Windows (installer + portable), macOS (dmg), and Linux (AppImage + deb).
+
+> The binaries are unsigned, so the first launch shows the usual warnings:
+> Windows SmartScreen → "More info" → "Run anyway"; macOS → right-click the app
+> → "Open".
+
 ## Requirements
 
 - **Node.js 20+** and **npm** (for building from source).

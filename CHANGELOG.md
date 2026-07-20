@@ -6,6 +6,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-07-20
+
 ### Changed
 
 - The app's primary typeface is now **JetBrains Mono** (bundled, OFL) — a
@@ -147,5 +149,6 @@ First complete release: a working, end-to-end personality forge.
 - MIT license, contributor guide (`CLAUDE.md`), and architecture spec
   (`ARCHITECTURE.md`).
 
-[Unreleased]: https://github.com/Exploitacious/hatchling/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/Exploitacious/hatchling/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/Exploitacious/hatchling/compare/v0.1.0...v1.0.0
 [0.1.0]: https://github.com/Exploitacious/hatchling/releases/tag/v0.1.0
