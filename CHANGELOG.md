@@ -8,6 +8,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Second built-in template, **The Interview**: a bot-driven, introspection-first
+  hatch. The model audits its own strengths and interviews the user in depth to
+  design the working relationship, rather than the user leading. Ships alongside
+  the classic OpenClaw Standard; the seeder now installs both idempotently, so
+  existing databases pick it up on next launch.
 - App-managed key fallback: when no OS keychain is available, API keys are
   encrypted with a per-install AES-256-GCM key (`0600` file under `userData`) so
   key storage works on headless boxes, minimal desktops, WSL, and containers. A

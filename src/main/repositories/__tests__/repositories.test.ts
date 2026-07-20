@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { createStore, type Store } from '../../store'
-import { BUILTIN_TEMPLATE_ID } from '@shared/constants'
+import { BUILTIN_TEMPLATE_ID, BUILTIN_INTERVIEW_TEMPLATE_ID } from '@shared/constants'
 
 let store: Store
 
@@ -16,7 +16,29 @@ describe('templates repository', () => {
     expect(t?.content).toContain('# BOOTSTRAP.md')
   })
 
-  it('lists the built-in template first', () => {
+  it('seeds The Interview built-in with a working completion signal', () => {
+    const t = store.templates.get(BUILTIN_INTERVIEW_TEMPLATE_ID)
+    expect(t).not.toBeNull()
+    expect(t?.isBuiltin).toBe(true)
+    expect(t?.name).toBe('The Interview')
+    expect(t?.content).toContain('# BOOTSTRAP.md')
+    // The engine completes a hatch when the bot deletes BOOTSTRAP.md, so the
+    // template must instruct that; and it must produce the three core files.
+    expect(t?.content).toContain('delete `BOOTSTRAP.md`')
+    for (const f of ['IDENTITY.md', 'USER.md', 'SOUL.md']) {
+      expect(t?.content).toContain(f)
+    }
+    expect(t?.openingMessage.length).toBeGreaterThan(0)
+  })
+
+  it('seeds exactly the two built-in templates, no duplicates', () => {
+    const builtins = store.templates.list().filter((t) => t.isBuiltin)
+    expect(builtins.map((t) => t.id).sort()).toEqual(
+      [BUILTIN_TEMPLATE_ID, BUILTIN_INTERVIEW_TEMPLATE_ID].sort()
+    )
+  })
+
+  it('lists a built-in template first', () => {
     store.templates.create({ name: 'Custom', content: 'hi' })
     expect(store.templates.list()[0].isBuiltin).toBe(true)
   })
