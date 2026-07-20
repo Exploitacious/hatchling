@@ -1,8 +1,15 @@
 import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
-import { Check, Eye, EyeOff, Plus, Trash2 } from 'lucide-react'
-import type { CreateProviderInput, ModelInfo, Provider, ProviderShape } from '@shared/types'
+import { Check, Eye, EyeOff, Plus, ShieldAlert, Trash2 } from 'lucide-react'
+import type {
+  CreateProviderInput,
+  KeyStorageMode,
+  ModelInfo,
+  Provider,
+  ProviderShape
+} from '@shared/types'
 import { PROVIDER_SHAPES } from '@shared/constants'
+import { invoke } from '@renderer/lib/ipc'
 import {
   Badge,
   Button,
@@ -32,7 +39,7 @@ export function SettingsScreen() {
   const toggleTheme = useSettingsStore((s) => s.toggleTheme)
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6 p-6">
+    <div className="mx-auto h-full max-w-4xl space-y-6 overflow-y-auto p-6">
       <div className="flex items-center justify-between">
         <h1 className="text-lg font-semibold text-hatch-text">Settings</h1>
         <div className="flex items-center gap-3">
@@ -75,6 +82,7 @@ function ProvidersTab() {
 
   return (
     <div className="space-y-4">
+      <StorageModeBanner />
       {providers.length === 0 ? (
         <EmptyState
           title="No providers configured"
@@ -88,6 +96,51 @@ function ProvidersTab() {
         </div>
       )}
       <AddProviderCard onCreate={create} />
+    </div>
+  )
+}
+
+/**
+ * Warns when API keys aren't in the OS keychain. Silent in the normal case
+ * (keychain present); shows the app-key fallback downgrade or the no-storage
+ * error when relevant.
+ */
+function StorageModeBanner() {
+  const [mode, setMode] = useState<KeyStorageMode | null>(null)
+
+  useEffect(() => {
+    let active = true
+    void invoke('apiKeys:storageMode', undefined).then((m) => {
+      if (active) setMode(m)
+    })
+    return () => {
+      active = false
+    }
+  }, [])
+
+  if (mode === null || mode === 'os-keychain') return null
+  const unavailable = mode === 'unavailable'
+
+  return (
+    <div className="flex items-start gap-3 rounded-md border border-hatch-warning/40 bg-hatch-warning/10 px-4 py-3 text-sm">
+      <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-hatch-warning" />
+      <div className="text-hatch-text">
+        {unavailable ? (
+          <>
+            <span className="font-medium">Key storage unavailable.</span> No secure store
+            was found, so API keys can&apos;t be saved on this system. Install an OS
+            keychain (gnome-keyring / libsecret or kwallet) and restart. The offline Mock
+            provider still works without a key.
+          </>
+        ) : (
+          <>
+            <span className="font-medium">OS keychain unavailable.</span> API keys are
+            encrypted with an app-managed key stored in your data folder. This works
+            everywhere but is weaker than a system keychain — anyone who can read your user
+            data can read your keys.
+          </>
+        )}
+      </div>
     </div>
   )
 }

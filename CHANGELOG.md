@@ -6,6 +6,25 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- App-managed key fallback: when no OS keychain is available, API keys are
+  encrypted with a per-install AES-256-GCM key (`0600` file under `userData`) so
+  key storage works on headless boxes, minimal desktops, WSL, and containers. A
+  Settings banner surfaces the downgrade, and `apiKeys:storageMode` reports the
+  active backend.
+
+### Fixed
+
+- Provider keys could not be saved on systems without an OS keychain — the vault
+  hard-failed with "OS secure storage is unavailable." It now falls back to the
+  app-managed key store instead of blocking.
+- Connection test no longer reports success for a key-requiring provider that has
+  no saved key (some endpoints answer an unauthenticated model-list probe, which
+  made "test passed" misleading right before the first real call failed).
+- Long screens (Settings, Sessions, Templates) and tall modals no longer clip on
+  short viewports — content scrolls.
+
 ## [0.1.0] - 2026-07-19
 
 First complete release: a working, end-to-end personality forge.

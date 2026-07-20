@@ -13,6 +13,12 @@
 // `openai-compatible` shape with a configurable base URL.
 export type ProviderShape = 'openai-compatible' | 'anthropic' | 'ollama' | 'mock'
 
+// Which backend the key vault is using to store API keys, surfaced to the UI.
+// 'os-keychain' is the OS secret store (strongest); 'app-key' is the
+// app-managed encrypted fallback for systems without a keychain; 'unavailable'
+// means no backend can persist a key.
+export type KeyStorageMode = 'os-keychain' | 'app-key' | 'unavailable'
+
 export interface Provider {
   id: string
   shape: ProviderShape

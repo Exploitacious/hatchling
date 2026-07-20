@@ -3,6 +3,7 @@ import { app, BrowserWindow, session, shell } from 'electron'
 import { createStore } from './store'
 import { KeyVault } from './security/keyVault'
 import { safeStorageEncryptor } from './security/safeStorageEncryptor'
+import { createAppKeyEncryptor } from './security/appKeyEncryptor'
 import { ConversationEngine, type EngineEmitter } from './engine/conversationEngine'
 import { electronExporter } from './export/electronExporter'
 import { registerIpcHandlers } from './ipc/register'
@@ -66,7 +67,12 @@ app.whenReady().then(() => {
   applyProductionCsp()
   const userData = app.getPath('userData')
   const store = createStore(join(userData, 'hatchling.db'))
-  const keyVault = new KeyVault(join(userData, 'keys.json'), safeStorageEncryptor)
+  // Prefer the OS keychain; fall back to an app-managed key when it's absent
+  // (headless boxes, minimal desktops) so key storage works everywhere.
+  const keyVault = new KeyVault(join(userData, 'keys.json'), [
+    safeStorageEncryptor,
+    createAppKeyEncryptor(join(userData, 'app-key.bin'))
+  ])
 
   // Broadcast engine events to every open window.
   const emit: EngineEmitter = (event, payload) => {

@@ -19,6 +19,7 @@ const defaultExporter: Exporter = {
 }
 
 const fakeEncryptor: Encryptor = {
+  id: 'os-keychain',
   isAvailable: () => true,
   encrypt: (p) => Buffer.from(p, 'utf8'),
   decrypt: (b) => b.toString('utf8')
@@ -77,6 +78,24 @@ describe('IPC handlers', () => {
 
     await h['providers:delete']({ id: p.id })
     expect(await h['apiKeys:has']({ providerId: p.id })).toBe(false)
+  })
+
+  it('testConnection refuses a key-requiring provider with no saved key', async () => {
+    const h = buildHandlers(makeCtx())
+    const p = await h['providers:create']({
+      shape: 'openai-compatible',
+      name: 'NeedsKey',
+      baseUrl: 'https://x.test/v1'
+    })
+    const result = await h['providers:testConnection']({ id: p.id })
+    expect(result.ok).toBe(false)
+    expect(result.error).toMatch(/no api key/i)
+  })
+
+  it('apiKeys:storageMode reports the active backend', async () => {
+    const h = buildHandlers(makeCtx())
+    // makeCtx wires an always-available os-keychain fake encryptor.
+    expect(await h['apiKeys:storageMode']()).toBe('os-keychain')
   })
 
   it('sessions:create freezes the template snapshot', async () => {

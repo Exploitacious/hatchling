@@ -39,21 +39,23 @@ export function Modal({ open, onClose, title, children, footer, className }: Mod
       />
       <div
         className={cn(
-          'relative z-10 w-full max-w-lg animate-fade-in rounded-lg border border-hatch-border bg-hatch-surface shadow-xl',
+          'relative z-10 flex max-h-[calc(100vh-2rem)] w-full max-w-lg animate-fade-in flex-col rounded-lg border border-hatch-border bg-hatch-surface shadow-xl',
           className
         )}
       >
         {title && (
-          <div className="flex items-center justify-between border-b border-hatch-border px-5 py-3">
+          <div className="flex shrink-0 items-center justify-between border-b border-hatch-border px-5 py-3">
             <h2 className="text-sm font-semibold text-hatch-text">{title}</h2>
             <IconButton label="Close" onClick={onClose}>
               <X className="h-4 w-4" />
             </IconButton>
           </div>
         )}
-        <div className="px-5 py-4">{children}</div>
+        <div className="flex-1 overflow-y-auto px-5 py-4">{children}</div>
         {footer && (
-          <div className="flex justify-end gap-2 border-t border-hatch-border px-5 py-3">{footer}</div>
+          <div className="flex shrink-0 justify-end gap-2 border-t border-hatch-border px-5 py-3">
+            {footer}
+          </div>
         )}
       </div>
     </div>

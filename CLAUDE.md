@@ -78,7 +78,9 @@ Rules:
   the user; never swallow. No empty catch blocks.
 - **Secrets**: API keys are never logged, never sent to the renderer, never
   written to SQLite. They live in the OS keychain via `safeStorage`, keyed by
-  provider id.
+  provider id — or, when no keychain exists, in the app-managed AES-256-GCM
+  fallback store (see ARCHITECTURE §6). Never weaken the vault so a key becomes
+  readable by the renderer.
 - **Database**: wrap multi-statement writes in transactions.
 - **IPC channel names** follow `domain:action` (`providers:list`,
   `sessions:create`).

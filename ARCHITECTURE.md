@@ -162,11 +162,24 @@ gives one, otherwise fall back to `DEFAULT_CONTEXT_WINDOW` and mark it
 
 ## 6. Secret storage
 
-API keys never touch SQLite or the renderer. They are encrypted at rest with
-Electron `safeStorage` and written to a small file under `userData`, keyed by
-provider id. Main exposes `apiKeys:save` / `apiKeys:has` / `apiKeys:delete` — the
-renderer can set and check for a key but can never read one back. The `mock` and
-`ollama` shapes need no key at all.
+API keys never touch SQLite or the renderer. They are encrypted at rest and
+written to a small file under `userData`, keyed by provider id. Main exposes
+`apiKeys:save` / `apiKeys:has` / `apiKeys:delete` / `apiKeys:storageMode` — the
+renderer can set, check, and learn *how* a key is stored, but can never read one
+back. The `mock` and `ollama` shapes need no key at all.
+
+`KeyVault` is backed by a list of `Encryptor`s in preference order:
+
+1. **`safeStorage`** (`os-keychain`) — the OS keychain. Preferred; strongest.
+2. **App-key fallback** (`app-key`) — AES-256-GCM with a per-install random key
+   in a `0600` file under `userData`. Used only when no OS keychain is available
+   (headless boxes, minimal desktops, WSL, containers). Weaker — the key sits
+   next to the ciphertext — so the app surfaces the downgrade in the Settings UI
+   via `apiKeys:storageMode`.
+
+Each stored entry records the backend that encrypted it, so a key stays readable
+even after a keychain later appears; a failed decrypt returns `null` (the key is
+simply re-entered). New saves always use the most-preferred *available* backend.
 
 ## 7. Conversation engine
 

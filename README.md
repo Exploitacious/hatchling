@@ -55,7 +55,9 @@ pick it.
 
 - No backend servers, no telemetry, no account.
 - API keys live in your OS keychain (via Electron `safeStorage`), never in
-  plaintext or the renderer process.
+  plaintext or the renderer process. On systems without a keychain (headless
+  boxes, minimal desktops, WSL), keys fall back to an app-managed encrypted store
+  — Settings shows a banner when that weaker mode is active.
 - Sessions, templates, and generated files live in a local SQLite database.
 - Files stay in memory during a hatch and only touch disk when you export.
 
@@ -87,6 +89,12 @@ provider to try a full hatch with zero setup.
 > Electron fetches its binary lazily, so a fresh install may not have it yet.
 > `npm install` runs a postinstall to fetch it; if that was skipped, run
 > `node node_modules/electron/install.js` once, then `npm run dev`.
+>
+> **Harmless Linux console noise on launch:** messages like `vaInitialize
+> failed` (no hardware video acceleration — Electron falls back to software) and
+> `org.freedesktop.portal.FileChooser` D-Bus errors (no desktop portal — Electron
+> falls back to the GTK file dialog) are expected on minimal/headless desktops
+> and don't affect the app.
 
 ### Building installers
 
