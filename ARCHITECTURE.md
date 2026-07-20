@@ -56,7 +56,9 @@ narrow bridge is. External links open in the system browser, never in-app.
 ## 3. Data model
 
 SQLite (`better-sqlite3`) at `userData/hatchling.db`, created and migrated on
-first run. The built-in template is seeded on first launch. Types are defined in
+first run. The built-in templates are seeded idempotently per id on every
+launch, so a newly shipped built-in appears for existing databases too (the
+seeder never overwrites user edits). Types are defined in
 [`src/shared/types.ts`](src/shared/types.ts); the tables:
 
 ### templates
