@@ -12,6 +12,7 @@ import type {
   CreateTemplateInput,
   ConversationState,
   FileArtifact,
+  KeyStorageMode,
   LlmErrorKind,
   Message,
   ModelInfo,
@@ -47,6 +48,7 @@ export interface IpcRequestMap {
   'apiKeys:save': { req: { providerId: string; key: string }; res: void }
   'apiKeys:has': { req: { providerId: string }; res: boolean }
   'apiKeys:delete': { req: { providerId: string }; res: void }
+  'apiKeys:storageMode': { req: void; res: KeyStorageMode }
 
   'templates:list': { req: void; res: Template[] }
   'templates:get': { req: { id: string }; res: Template | null }

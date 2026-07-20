@@ -6,6 +6,7 @@ import type { Exporter } from '../export/exporter'
 import { sanitizeName } from '../export/exporter'
 import { buildTranscript } from '../export/transcript'
 import { createProvider } from '../providers/factory'
+import { PROVIDER_SHAPES } from '@shared/constants'
 
 export interface IpcContext {
   store: Store
@@ -43,8 +44,15 @@ export function buildHandlers(ctx: IpcContext): IpcHandlers {
     'providers:testConnection': async ({ id }) => {
       const provider = store.providers.get(id)
       if (!provider) return { ok: false, error: 'Provider not found' }
+      const key = keyVault.get(id) ?? undefined
+      // A key-requiring shape with no saved key would often pass a bare reachability
+      // probe (some endpoints serve the model list unauthenticated) and then fail on
+      // the first real completion. Reject up front so "test passed" means usable.
+      const shapeMeta = PROVIDER_SHAPES.find((s) => s.shape === provider.shape)
+      if (shapeMeta?.needsApiKey && !key) {
+        return { ok: false, error: 'No API key saved for this provider. Save a key first, then test.' }
+      }
       try {
-        const key = keyVault.get(id) ?? undefined
         const ok = await createProvider(provider, key).validateConnection()
         return { ok }
       } catch (err) {
@@ -59,6 +67,7 @@ export function buildHandlers(ctx: IpcContext): IpcHandlers {
     'apiKeys:delete': ({ providerId }) => {
       keyVault.delete(providerId)
     },
+    'apiKeys:storageMode': () => keyVault.storageMode(),
 
     'templates:list': () => store.templates.list(),
     'templates:get': ({ id }) => store.templates.get(id),
