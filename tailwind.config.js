@@ -23,14 +23,14 @@ module.exports = {
           danger: 'rgb(var(--hatch-danger) / <alpha-value>)'
         }
       },
-      // Emoji/symbol fallbacks matter on every stack: platform emoji fonts
-      // first (native look on mac/Windows), then the bundled Noto fonts so
-      // rendering is guaranteed on systems with no emoji font at all.
+      // JetBrains Mono (bundled) is the primary face everywhere — the app's
+      // terminal aesthetic. Emoji/symbol fallbacks matter on every stack:
+      // platform emoji fonts first (native look on mac/Windows), then the
+      // bundled Noto fonts so rendering is guaranteed with no system fonts.
       fontFamily: {
         mono: [
+          'JetBrains Mono',
           'ui-monospace',
-          'SFMono-Regular',
-          'Menlo',
           'Consolas',
           'monospace',
           'Apple Color Emoji',
@@ -40,11 +40,10 @@ module.exports = {
           'Noto Sans Symbols 2'
         ],
         sans: [
-          'Inter',
-          'system-ui',
-          '-apple-system',
-          'Segoe UI',
-          'sans-serif',
+          'JetBrains Mono',
+          'ui-monospace',
+          'Consolas',
+          'monospace',
           'Apple Color Emoji',
           'Segoe UI Emoji',
           'Segoe UI Symbol',
