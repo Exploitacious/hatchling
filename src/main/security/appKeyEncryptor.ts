@@ -32,9 +32,11 @@ export function createAppKeyEncryptor(keyFilePath: string): Encryptor {
         cachedKey = existing
         return cachedKey
       }
-      // A truncated/corrupt key file would make every stored key undecryptable;
-      // regenerating is the only recovery, and it invalidates old ciphertext
-      // (KeyVault.get returns null on decrypt failure, so keys are just re-entered).
+      // Only a wrong-length key file is detected here and regenerated. A
+      // same-length but bit-corrupted key still loads, and decrypt then fails
+      // its GCM auth check — KeyVault.get returns null, so those keys are simply
+      // re-entered. Either way no crash, and regenerating invalidates old
+      // ciphertext (which is unrecoverable regardless once the key is lost).
     }
     const key = randomBytes(KEY_LENGTH)
     mkdirSync(dirname(keyFilePath), { recursive: true })

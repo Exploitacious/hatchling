@@ -27,6 +27,18 @@ describe('appKeyEncryptor', () => {
     expect(enc.decrypt(blob)).toBe('sk-super-secret')
   })
 
+  it('uses a fresh IV per encryption (no nonce reuse)', () => {
+    const enc = createAppKeyEncryptor(keyFile())
+    const a = enc.encrypt('same-plaintext')
+    const b = enc.encrypt('same-plaintext')
+    // Different IV (first 12 bytes) => different ciphertext for identical input.
+    expect(a.subarray(0, 12).equals(b.subarray(0, 12))).toBe(false)
+    expect(a.equals(b)).toBe(false)
+    // Both still decrypt back to the original.
+    expect(enc.decrypt(a)).toBe('same-plaintext')
+    expect(enc.decrypt(b)).toBe('same-plaintext')
+  })
+
   it('creates the key file with 0600 permissions', () => {
     const file = keyFile()
     createAppKeyEncryptor(file).encrypt('x')
