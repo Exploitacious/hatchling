@@ -109,6 +109,9 @@ provider to try a full hatch with zero setup.
 > and don't affect the app. Under WSLg you may also see `Frame latency is
 > negative` (compositor clock skew) and `atom_cache` lines about
 > `application/vnd.portal.*` — equally harmless.
+>
+> Emoji rendering needs no system fonts — the app bundles its own color-emoji
+> and symbol fonts, so glyphs render identically on every platform.
 
 ### Building installers
 

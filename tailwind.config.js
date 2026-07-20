@@ -23,9 +23,34 @@ module.exports = {
           danger: 'rgb(var(--hatch-danger) / <alpha-value>)'
         }
       },
+      // Emoji/symbol fallbacks matter on every stack: platform emoji fonts
+      // first (native look on mac/Windows), then the bundled Noto fonts so
+      // rendering is guaranteed on systems with no emoji font at all.
       fontFamily: {
-        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Consolas', 'monospace'],
-        sans: ['Inter', 'system-ui', '-apple-system', 'Segoe UI', 'sans-serif']
+        mono: [
+          'ui-monospace',
+          'SFMono-Regular',
+          'Menlo',
+          'Consolas',
+          'monospace',
+          'Apple Color Emoji',
+          'Segoe UI Emoji',
+          'Segoe UI Symbol',
+          'Noto Color Emoji',
+          'Noto Sans Symbols 2'
+        ],
+        sans: [
+          'Inter',
+          'system-ui',
+          '-apple-system',
+          'Segoe UI',
+          'sans-serif',
+          'Apple Color Emoji',
+          'Segoe UI Emoji',
+          'Segoe UI Symbol',
+          'Noto Color Emoji',
+          'Noto Sans Symbols 2'
+        ]
       },
       keyframes: {
         'fade-in': {
