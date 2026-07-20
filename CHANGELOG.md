@@ -8,6 +8,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- The app's primary typeface is now **JetBrains Mono** (bundled, OFL) — a
+  modern terminal look across the whole UI, chat included.
+
 - **The Interview** closing now requires the naming ceremony: the bot proposes
   its own name and signature emoji — agreed with the user before the hatch can
   close.
@@ -68,11 +71,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - Emoji and symbols now render on every platform. The app bundles Noto Color
-  Emoji (the vendored **COLRv1** build — Chromium cannot render the SVG-in-OT
-  flavor some packages ship, which still produced placeholder squares) and Noto
-  Sans Symbols 2, as unicode-range subsets loaded only as needed; font stacks
-  list platform emoji fonts first. Verified by rendering the glyph in Electron
-  on a system with no emoji fonts installed.
+  Emoji as the **CBDT bitmap** build — the SVG-in-OT flavor some packages ship
+  is unsupported by Chromium (tofu), and the COLRv1 vector build painted
+  invisible glyphs on WSLg's GPU path. Bitmaps have no paint pipeline to break;
+  pixel-verified in Electron with and without GPU on a system with no emoji
+  fonts installed. Noto Sans Symbols 2 covers non-emoji symbols.
 
 - The chat composer now grows with what you type (up to ~14 lines, then
   scrolls internally) instead of staying a fixed 2-3 lines.
