@@ -70,6 +70,13 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- The custom font stacks (and with them the bundled emoji font) never applied:
+  Tailwind emits font families verbatim, and the unquoted "Noto Sans Symbols 2"
+  — an identifier ending in a digit — made the whole `font-family` declaration
+  invalid CSS, which Chromium silently dropped. Families are now quoted;
+  verified by screenshotting the built app on a system with no fonts installed
+  (JetBrains Mono + full-color emoji render).
+
 - Emoji and symbols now render on every platform. The app bundles Noto Color
   Emoji as the **CBDT bitmap** build — the SVG-in-OT flavor some packages ship
   is unsupported by Chromium (tofu), and the COLRv1 vector build painted
