@@ -6,6 +6,12 @@ directories:
   buildResources: build
   output: release
 
+# CI publishes installers to a draft GitHub Release on version tags; the draft
+# is reviewed and published manually.
+publish:
+  provider: github
+  releaseType: draft
+
 # Only the bundled output + manifest ship in the app. Source, tests, and
 # dev config are excluded automatically by electron-builder defaults.
 files:
