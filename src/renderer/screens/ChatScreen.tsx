@@ -238,7 +238,9 @@ export function ChatScreen() {
                 onKeyDown={onInputKey}
                 rows={1}
                 placeholder="Type a message…  (Ctrl/⌘+Enter to send)"
-                className="max-h-32 min-h-[2.5rem]"
+                // field-sizing makes the composer grow with its content (and
+                // shrink back), capped at ~14 lines before it scrolls internally.
+                className="min-h-[2.5rem] max-h-72 [field-sizing:content]"
                 disabled={busy}
               />
               <Button variant="primary" onClick={send} disabled={busy || input.trim().length === 0}>
