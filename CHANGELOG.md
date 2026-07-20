@@ -53,6 +53,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- The chat composer now grows with what you type (up to ~14 lines, then
+  scrolls internally) instead of staying a fixed 2-3 lines.
 - The Start Hatching button no longer stays stuck on a spinner when opening the
   New Hatch dialog after a previous successful start — the submit flag leaked
   across opens because the dialog component never unmounts.
