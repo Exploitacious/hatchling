@@ -6,6 +6,20 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Rewrote **The Interview** built-in around a spotlight inversion: the model's
+  self-assessment moves backstage (it steers which questions occur to the model,
+  and is never conversation material), the human becomes the entire subject, and
+  matching the human's tone, length, and pace is framed as a quiet mission. The
+  first version prompted models to open with a capabilities monologue; the
+  redesign makes the quality of attention — not self-description — the way the
+  bot introduces itself.
+- The template seeder now updates built-in templates in place when the shipped
+  copy changes, so existing databases receive improved built-ins on the next
+  launch. Safe by construction: built-ins are read-only in the app, so there are
+  no user edits to overwrite. User-created templates are never touched.
+
 ### Added
 
 - Second built-in template, **The Interview**: a bot-driven, introspection-first
