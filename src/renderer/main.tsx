@@ -5,7 +5,9 @@ import App from './App'
 // Bundled fallback fonts so emoji and symbols render on every platform —
 // minimal Linux/WSL installs often ship no color-emoji font at all, and
 // Electron doesn't bundle one. Unicode-range subsets: only used ranges load.
-import '@fontsource/noto-color-emoji'
+// The emoji font is the vendored COLRv1 build — Chromium can't render the
+// SVG-in-OT flavor that some packages ship (see the font dir's README).
+import './assets/fonts/noto-color-emoji/noto-color-emoji.css'
 import '@fontsource/noto-sans-symbols-2'
 import './index.css'
 

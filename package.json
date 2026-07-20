@@ -29,7 +29,6 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.112.3",
     "@codemirror/lang-markdown": "^6.5.1",
-    "@fontsource/noto-color-emoji": "^5.3.0",
     "@fontsource/noto-sans-symbols-2": "^5.3.0",
     "@uiw/react-codemirror": "^4.25.11",
     "better-sqlite3": "^12.11.1",
