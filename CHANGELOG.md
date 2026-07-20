@@ -8,6 +8,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- **The Interview** closing now requires the naming ceremony: the bot proposes
+  its own name and signature emoji — agreed with the user before the hatch can
+  close.
+
 - Tightened **The Interview** by ~45% and rebalanced it for weaker models:
   synthesis over interrogation (observations, hypotheses, and honest takes drive
   the conversation, with license to challenge and to be wrong out loud),
@@ -30,6 +34,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Session lifecycle controls: a **Pause** button in the chat header (stops any
+  active turn; resume anytime from Sessions), and **Reopen conversation** on the
+  results screen to continue a completed session (clears its completion stamp).
+- **Complete Hatch** now opens a dialog that branches on progress: with files
+  written it's a simple confirm; with none it offers to have the bot write all
+  files from the conversation so far, complete without files, or pause instead.
+- Liveness indicator while the bot works: current phase (thinking / responding /
+  writing a named file), a per-turn stopwatch, a "no output for Ns" warning when
+  the stream goes silent, and an optional details toggle showing recent tool
+  activity.
 - Live context-window discovery: model pickers now show each model's reported
   window (e.g. `deepseek-v4 · 128k`) when the provider's API exposes one —
   Anthropic `max_input_tokens`, OpenRouter/Groq/vLLM/LM Studio-style list

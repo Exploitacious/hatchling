@@ -16,6 +16,16 @@ export interface StreamingMessage {
   text: string
 }
 
+/** One engine activity beat (tool call), for the liveness strip. */
+export interface ActivityEntry {
+  tool: string
+  filename: string
+  result: string
+  at: number
+}
+
+const ACTIVITY_LOG_LIMIT = 30
+
 export interface HatchSession {
   session: Session | null
   messages: Message[]
@@ -31,6 +41,10 @@ export interface HatchSession {
   notice: string | null
   error: string | null
   ready: boolean
+  /** Recent tool activity, newest last (bounded). */
+  activity: ActivityEntry[]
+  /** Epoch ms of the last engine signal (token, state change, tool call). */
+  lastEventAt: number
   sendMessage: (content: string) => void
   complete: () => Promise<void>
   abort: () => void
@@ -59,6 +73,8 @@ export function useHatchSession(sessionId: string): HatchSession {
   const [notice, setNotice] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [ready, setReady] = useState(false)
+  const [activity, setActivity] = useState<ActivityEntry[]>([])
+  const [lastEventAt, setLastEventAt] = useState(() => Date.now())
 
   useEffect(() => {
     let cancelled = false
@@ -75,6 +91,7 @@ export function useHatchSession(sessionId: string): HatchSession {
       }),
       subscribe('chat:token', (p) => {
         if (p.sessionId !== sessionId) return
+        setLastEventAt(Date.now())
         if (p.done) {
           setStreaming((s) => (s && s.messageId === p.messageId ? null : s))
           return
@@ -85,7 +102,19 @@ export function useHatchSession(sessionId: string): HatchSession {
         }))
       }),
       subscribe('chat:state', (p) => {
-        if (p.sessionId === sessionId) setStatus(p.state)
+        if (p.sessionId !== sessionId) return
+        setLastEventAt(Date.now())
+        setStatus(p.state)
+      }),
+      subscribe('chat:toolActivity', (p) => {
+        if (p.sessionId !== sessionId) return
+        const at = Date.now()
+        setLastEventAt(at)
+        setActivity((prev) =>
+          [...prev, { tool: p.tool, filename: p.filename, result: p.result, at }].slice(
+            -ACTIVITY_LOG_LIMIT
+          )
+        )
       }),
       subscribe('chat:notice', (p) => {
         if (p.sessionId === sessionId) setNotice(p.message)
@@ -173,6 +202,8 @@ export function useHatchSession(sessionId: string): HatchSession {
     notice,
     error,
     ready,
+    activity,
+    lastEventAt,
     sendMessage,
     complete,
     abort

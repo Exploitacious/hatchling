@@ -8,6 +8,7 @@ import {
   FileText,
   FolderDown,
   MessageSquare,
+  MessageSquarePlus,
   Package,
   Plus,
   Sparkles
@@ -105,6 +106,21 @@ export function ResultsScreen() {
               {session ? `${session.name} — ` : ''}your bot&apos;s personality files
             </p>
           </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={async () => {
+              try {
+                await invoke('sessions:update', { id, status: 'in_progress' })
+                navigate(`/sessions/${id}/chat`)
+              } catch (err) {
+                toast.error(errorMessage(err))
+              }
+            }}
+          >
+            <MessageSquarePlus className="h-4 w-4" />
+            Reopen conversation
+          </Button>
         </div>
 
         {error && (

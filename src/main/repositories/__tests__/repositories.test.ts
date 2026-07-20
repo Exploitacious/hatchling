@@ -28,6 +28,9 @@ describe('templates repository', () => {
     for (const f of ['IDENTITY.md', 'USER.md', 'SOUL.md']) {
       expect(t?.content).toContain(f)
     }
+    // The closing ceremony requires the bot to propose a name and emoji.
+    expect(t?.content).toMatch(/name/i)
+    expect(t?.content).toMatch(/emoji/i)
     expect(t?.openingMessage.length).toBeGreaterThan(0)
   })
 
@@ -128,6 +131,14 @@ describe('sessions, messages, and files', () => {
     const s = store.sessions.setStatus(makeSession(), 'completed')
     expect(s.status).toBe('completed')
     expect(s.completedAt).not.toBeNull()
+  })
+
+  it('reopening a completed session clears completed_at', () => {
+    const id = makeSession()
+    store.sessions.setStatus(id, 'completed')
+    const reopened = store.sessions.update({ id, status: 'in_progress' })
+    expect(reopened.status).toBe('in_progress')
+    expect(reopened.completedAt).toBeNull()
   })
 
   it('round-trips token usage', () => {
