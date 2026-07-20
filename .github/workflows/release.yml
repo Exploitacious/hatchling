@@ -23,6 +23,10 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+        env:
+          # electron-builder downloads its own Electron for packaging, so the
+          # npm electron binary isn't needed here.
+          ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
 
       - name: Build and package
         run: npm run build && npx electron-builder --publish never

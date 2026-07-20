@@ -83,6 +83,11 @@ No environment file is required — provider keys are entered in the app's
 Settings screen and stored in your keychain. Start with the **Mock (offline)**
 provider to try a full hatch with zero setup.
 
+> **Troubleshooting — `Error: Electron uninstall` on `npm run dev`:** recent
+> Electron fetches its binary lazily, so a fresh install may not have it yet.
+> `npm install` runs a postinstall to fetch it; if that was skipped, run
+> `node node_modules/electron/install.js` once, then `npm run dev`.
+
 ### Building installers
 
 ```bash
