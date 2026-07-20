@@ -28,9 +28,9 @@ at and hands you plain markdown files at the end.
 1. **Pick a template** — ships with two built-ins, or write your own:
    - **OpenClaw Standard** — the classic "Wake up, my friend!" ritual. You lead;
      the bot wakes up as a newborn and you figure out who it is together.
-   - **The Interview** — the bot leads. It looks inward at its own strengths,
-     then interviews *you* in depth (a little like being courted) to design the
-     working relationship on purpose. Different models run a different interview.
+   - **The Interview** — the bot leads, and the spotlight stays on *you*. It
+     interviews you in depth about your world and quietly shapes itself into the
+     partner you actually need. Different models run a different interview.
 2. **Pick a model** — any provider you've configured, or the built-in offline
    **Mock** model that needs no key.
 3. **Chat** — the bot asks who it is and who you are, and writes files as you go.
