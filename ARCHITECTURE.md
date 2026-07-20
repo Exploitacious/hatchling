@@ -236,13 +236,26 @@ or "writing SOUL.md:" lead-ins) and routes any match through the same
 call in the same turn, so nothing is double-counted.
 
 **Completion.** Two triggers: the bot deletes `BOOTSTRAP.md` (a signal, shown as
-a notice), or the user clicks **Complete Hatch** (the authoritative action). On
-completion the session is marked `completed` and the UI moves to the results
-screen.
+a notice), or the user clicks **Complete Hatch** (the authoritative action).
+Clicking opens a dialog that branches on whether the bot has written any live
+files yet: with files it's a plain confirm; with none it offers to have the bot
+generate the files first (`FORCE_GENERATE_MESSAGE`, an app-level user message
+that works with any template), to complete empty, or to pause. On completion
+the session is marked `completed` and the UI moves to the results screen.
+
+**Pause & reopen.** The chat header has an explicit Pause (aborts any active
+turn; the session stays `in_progress` and resumes from Sessions), and the
+results screen can reopen a `completed` session back to `in_progress` to keep
+the conversation going — reopening clears `completed_at`.
 
 **Resume.** Reopening an `in_progress` session reloads its messages and files
 and resumes at `waiting_for_user` or `waiting_for_bot` depending on the last
 message's role.
+
+**Liveness.** While the bot works, the chat shows the current phase (thinking /
+responding / writing a named file via `chat:toolActivity`), a per-turn
+stopwatch, and a "no output for Ns" warning when the engine has been silent —
+with an optional details toggle listing recent tool activity.
 
 **Token tracking.** Usage is extracted from each response, accumulated on the
 session, and pushed via `session:usage` with a context percentage (against the

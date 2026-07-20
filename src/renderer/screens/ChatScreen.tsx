@@ -10,15 +10,31 @@ import {
   FileText,
   PanelRightClose,
   PanelRightOpen,
+  Pause,
   Send,
   Sparkles
 } from 'lucide-react'
 import type { FileArtifact, Message } from '@shared/types'
-import { DEFAULT_CONTEXT_WINDOW } from '@shared/constants'
+import { DEFAULT_CONTEXT_WINDOW, FORCE_GENERATE_MESSAGE } from '@shared/constants'
 import { Badge, Button, IconButton, Spinner, Textarea } from '@renderer/components/ui'
 import { Markdown } from '@renderer/components/Markdown'
+import { CompleteHatchDialog } from '@renderer/components/CompleteHatchDialog'
 import { cn, formatBytes } from '@renderer/lib/format'
-import { isBusy, useHatchSession } from '@renderer/store/useHatchSession'
+import { isBusy, useHatchSession, type ActivityEntry } from '@renderer/store/useHatchSession'
+
+/** Human phrasing for a tool-activity beat, e.g. "writing IDENTITY.md". */
+function activityLabel(entry: ActivityEntry): string {
+  switch (entry.tool) {
+    case 'write_file':
+      return `writing ${entry.filename}`
+    case 'read_file':
+      return `reading ${entry.filename}`
+    case 'delete_file':
+      return `removing ${entry.filename}`
+    default:
+      return entry.filename
+  }
+}
 
 function compact(n: number): string {
   return n >= 1000 ? `${Math.round(n / 1000)}k` : String(n)
@@ -138,10 +154,17 @@ export function ChatScreen() {
   const [expandedFile, setExpandedFile] = useState<string | null>(null)
   const [elapsed, setElapsed] = useState(0)
   const [completing, setCompleting] = useState(false)
+  const [completeOpen, setCompleteOpen] = useState(false)
+  const [showActivity, setShowActivity] = useState(false)
+  const [now, setNow] = useState(() => Date.now())
+  const [busySince, setBusySince] = useState<number | null>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const timer = window.setInterval(() => setElapsed((e) => e + 1), 1000)
+    const timer = window.setInterval(() => {
+      setElapsed((e) => e + 1)
+      setNow(Date.now())
+    }, 1000)
     return () => window.clearInterval(timer)
   }, [])
 
@@ -160,6 +183,16 @@ export function ChatScreen() {
 
   const busy = isBusy(hatch.status)
   const model = hatch.session?.model ?? '—'
+
+  // Track when the current bot turn started, for the liveness stopwatch.
+  useEffect(() => {
+    setBusySince(busy ? Date.now() : null)
+  }, [busy])
+
+  const liveFileCount = hatch.files.filter((f) => !f.deletedAt).length
+  const latestActivity = hatch.activity[hatch.activity.length - 1] ?? null
+  const turnSeconds = busySince ? Math.max(0, Math.floor((now - busySince) / 1000)) : 0
+  const silentSeconds = Math.max(0, Math.floor((now - hatch.lastEventAt) / 1000))
   // Effective window: latest engine report, else the session's resolved value,
   // else the default (labeled estimated).
   const windowTokens = hatch.contextWindow ?? hatch.session?.contextWindow ?? DEFAULT_CONTEXT_WINDOW
@@ -185,12 +218,29 @@ export function ChatScreen() {
   }
 
   async function onComplete(): Promise<void> {
+    setCompleteOpen(false)
     setCompleting(true)
     try {
       await hatch.complete()
     } catch {
       setCompleting(false)
     }
+  }
+
+  function onGenerateFiles(): void {
+    setCompleteOpen(false)
+    // If a turn is mid-flight, stop it cleanly first — the generate instruction
+    // starts a fresh turn over the full history.
+    if (busy) hatch.abort()
+    hatch.sendMessage(FORCE_GENERATE_MESSAGE)
+    toast('Asked the bot to write the files now.')
+  }
+
+  function onPause(): void {
+    setCompleteOpen(false)
+    hatch.abort()
+    toast('Paused — pick this session up anytime from Sessions.')
+    navigate('/')
   }
 
   if (!hatch.ready) {
@@ -218,9 +268,42 @@ export function ChatScreen() {
                 </div>
               </div>
             )}
-            {busy && !hatch.streaming && (
-              <div className="flex items-center gap-2 text-xs text-hatch-muted">
-                <Spinner className="h-3 w-3" /> the bot is thinking…
+            {busy && (
+              <div className="space-y-1 text-xs text-hatch-muted">
+                <div className="flex items-center gap-2">
+                  <Spinner className="h-3 w-3" />
+                  <span>
+                    {hatch.status === 'processing_tool_call' && latestActivity
+                      ? activityLabel(latestActivity)
+                      : hatch.streaming
+                        ? 'responding'
+                        : hatch.status === 'sending_opening'
+                          ? 'starting the conversation'
+                          : 'thinking'}
+                    … {clock(turnSeconds)}
+                  </span>
+                  {silentSeconds > 10 && (
+                    <span className="text-hatch-warning">
+                      no output for {silentSeconds}s
+                    </span>
+                  )}
+                  <button
+                    type="button"
+                    className="ml-1 underline decoration-dotted underline-offset-2 hover:text-hatch-text"
+                    onClick={() => setShowActivity((v) => !v)}
+                  >
+                    {showActivity ? 'hide details' : 'details'}
+                  </button>
+                </div>
+                {showActivity && hatch.activity.length > 0 && (
+                  <ul className="ml-5 space-y-0.5 font-mono text-[0.7rem]">
+                    {hatch.activity.slice(-6).map((a) => (
+                      <li key={a.at + a.filename}>
+                        {activityLabel(a)} — {a.result}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
             )}
             {hatch.error && (
@@ -309,12 +392,30 @@ export function ChatScreen() {
             <Cpu className="h-3.5 w-3.5" /> {model}
           </span>
           <span>{clock(elapsed)}</span>
-          <Button variant="primary" size="sm" onClick={onComplete} disabled={completing}>
+          <Button variant="ghost" size="sm" onClick={onPause} disabled={completing}>
+            <Pause className="h-4 w-4" />
+            Pause
+          </Button>
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={() => setCompleteOpen(true)}
+            disabled={completing}
+          >
             {completing ? <Spinner className="text-black" /> : <Sparkles className="h-4 w-4" />}
             Complete Hatch
           </Button>
         </div>
       </div>
+
+      <CompleteHatchDialog
+        open={completeOpen}
+        fileCount={liveFileCount}
+        onGenerate={onGenerateFiles}
+        onComplete={() => void onComplete()}
+        onPause={onPause}
+        onCancel={() => setCompleteOpen(false)}
+      />
     </div>
   )
 }
