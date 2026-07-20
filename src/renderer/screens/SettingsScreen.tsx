@@ -10,6 +10,7 @@ import type {
 } from '@shared/types'
 import { PROVIDER_SHAPES } from '@shared/constants'
 import { invoke } from '@renderer/lib/ipc'
+import { formatTokens } from '@renderer/lib/format'
 import {
   Badge,
   Button,
@@ -524,7 +525,7 @@ function ModelsTab() {
             </option>
             {models.map((m) => (
               <option key={m.id} value={m.id}>
-                {m.id}
+                {m.contextWindow ? `${m.id} · ${formatTokens(m.contextWindow)}` : m.id}
               </option>
             ))}
           </Select>

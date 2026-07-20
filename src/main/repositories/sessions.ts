@@ -10,6 +10,8 @@ export interface NewSessionRecord {
   openingMessage: string
   providerId: string | null
   model: string
+  contextWindow?: number | null
+  temperature?: number | null
 }
 
 interface SessionRow {
@@ -22,6 +24,8 @@ interface SessionRow {
   model: string
   status: string
   token_usage: string
+  context_window: number | null
+  temperature: number | null
   created_at: string
   completed_at: string | null
 }
@@ -50,6 +54,8 @@ function mapRow(row: SessionRow): Session {
     model: row.model,
     status: row.status as SessionStatus,
     tokenUsage: parseUsage(row.token_usage),
+    contextWindow: row.context_window,
+    temperature: row.temperature,
     createdAt: row.created_at,
     completedAt: row.completed_at
   }
@@ -78,8 +84,8 @@ export class SessionsRepository {
       .prepare(
         `INSERT INTO sessions
            (id, name, template_id, template_snap, opening_message, provider_id, model,
-            status, token_usage, created_at, completed_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, 'in_progress', ?, ?, NULL)`
+            status, token_usage, context_window, temperature, created_at, completed_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, 'in_progress', ?, ?, ?, ?, NULL)`
       )
       .run(
         id,
@@ -90,6 +96,8 @@ export class SessionsRepository {
         rec.providerId,
         rec.model,
         JSON.stringify({ input: 0, output: 0, total: 0 }),
+        rec.contextWindow ?? null,
+        rec.temperature ?? null,
         nowIso()
       )
     return this.getOrThrow(id)

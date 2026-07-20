@@ -100,6 +100,15 @@ export interface Session {
   model: string
   status: SessionStatus
   tokenUsage: TokenUsage
+  /**
+   * Effective context window (tokens) for this session, resolved at creation:
+   * a user override from the Advanced options, else the model's reported
+   * window. Null means unknown — the app uses DEFAULT_CONTEXT_WINDOW and labels
+   * usage "estimated".
+   */
+  contextWindow: number | null
+  /** Sampling temperature override. Null = use the provider's default. */
+  temperature: number | null
   createdAt: string
   completedAt: string | null
 }
@@ -111,6 +120,10 @@ export interface CreateSessionInput {
   model: string
   /** Overrides the template's opening message when set. */
   openingMessage?: string
+  /** Effective context window resolved by the UI (override or model-reported). */
+  contextWindow?: number
+  /** Sampling temperature override (provider default when omitted). */
+  temperature?: number
 }
 
 export interface UpdateSessionInput {
@@ -195,7 +208,12 @@ export interface ModelInfo {
   id: string
   /** Provider label the model belongs to (for grouped display). */
   provider?: string
-  /** Max context window in tokens when known; undefined when the model is unknown. */
+  /**
+   * Max context window in tokens, when the provider's API reports one
+   * (Anthropic max_input_tokens, OpenRouter/Groq/vLLM-style list fields,
+   * Ollama /api/show). Undefined when the provider doesn't expose it — the app
+   * then falls back to DEFAULT_CONTEXT_WINDOW and labels usage "estimated".
+   */
   contextWindow?: number
 }
 
@@ -210,6 +228,9 @@ export interface SendMessageParams {
   model: string
   messages: LlmMessage[]
   tools?: ToolDefinition[]
+  /** Sampling temperature; omitted = provider default. Forwarded as-is — the
+   *  provider rejects unsupported values and that error surfaces to the user. */
+  temperature?: number
   onEvent?: (event: LlmStreamEvent) => void
   signal?: AbortSignal
 }

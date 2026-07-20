@@ -55,6 +55,14 @@ Model lists are fetched live from whatever you connect — no hardcoded model
 names, no curated "use this one" badges. If a provider reports a model, you can
 pick it.
 
+Context windows work the same way: when a provider's API reports a model's
+window (Anthropic, OpenRouter/Groq/vLLM-style endpoints, Ollama), it shows next
+to the model and drives the token meter. When it doesn't (base OpenAI shape,
+many gateways), the app assumes a 128k default and labels usage *estimated* —
+and the New Hatch **Advanced** options let you set the real window yourself,
+enter a custom model id, or pin a sampling temperature. Values a provider
+doesn't support fail with the provider's own error message, not silently.
+
 ## Local-first, always
 
 - No backend servers, no telemetry, no account.

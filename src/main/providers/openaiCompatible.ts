@@ -13,6 +13,7 @@ import { TOOL_DEFINITIONS } from '@shared/constants'
 import type { AdapterConfig } from './factory'
 import { LlmError, isAbortError, toLlmError } from './errors'
 import { normalizeToolCall, toOpenAiTools } from './toolFormat'
+import { probeOpenAiCompatContextWindow } from './contextWindow'
 
 // Adapter for any OpenAI-compatible endpoint (OpenAI, OpenRouter, self-hosted
 // gateways, Gemini's OpenAI-compatible endpoint, …) via the `openai` SDK with a
@@ -117,7 +118,13 @@ export class OpenAiCompatibleProvider implements LlmProvider {
   async listModels(): Promise<ModelInfo[]> {
     try {
       const page = await this.client.models.list()
-      return page.data.map((m) => ({ id: m.id, provider: 'OpenAI-compatible' }))
+      return page.data.map((m) => ({
+        id: m.id,
+        provider: 'OpenAI-compatible',
+        // Endpoints disagree on the field name (or omit it entirely, like base
+        // OpenAI); probe the variants seen in the wild.
+        contextWindow: probeOpenAiCompatContextWindow(m)
+      }))
     } catch (err) {
       throw toLlmError(err)
     }
@@ -145,7 +152,8 @@ export class OpenAiCompatibleProvider implements LlmProvider {
         messages: toOpenAiMessages(params.messages),
         tools: toOpenAiTools(params.tools ?? TOOL_DEFINITIONS),
         stream: true,
-        stream_options: { include_usage: true }
+        stream_options: { include_usage: true },
+        ...(params.temperature !== undefined ? { temperature: params.temperature } : {})
       }
       // Single controlled cast at the SDK boundary; our wire types drive the rest.
       const stream = (await this.client.chat.completions.create(

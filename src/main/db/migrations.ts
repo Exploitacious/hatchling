@@ -74,6 +74,20 @@ export const MIGRATIONS: readonly Migration[] = [
         CREATE INDEX idx_files_session ON files (session_id);
       `)
     }
+  },
+  {
+    version: 2,
+    up: (db) => {
+      // Advanced per-session model settings. context_window: effective window
+      // (tokens) resolved at creation — a user override or the model's reported
+      // window; NULL = unknown, use the DEFAULT_CONTEXT_WINDOW fallback and
+      // label usage "estimated". temperature: optional sampling override;
+      // NULL = provider default.
+      db.exec(`
+        ALTER TABLE sessions ADD COLUMN context_window INTEGER;
+        ALTER TABLE sessions ADD COLUMN temperature REAL;
+      `)
+    }
   }
 ]
 

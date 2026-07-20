@@ -103,6 +103,25 @@ describe('sessions, messages, and files', () => {
     expect(s?.status).toBe('in_progress')
     expect(s?.templateSnapshot).toContain('BOOTSTRAP.md')
     expect(s?.tokenUsage).toEqual({ input: 0, output: 0, total: 0 })
+    // Advanced settings default to unknown/provider-default.
+    expect(s?.contextWindow).toBeNull()
+    expect(s?.temperature).toBeNull()
+  })
+
+  it('round-trips advanced settings (context window + temperature)', () => {
+    const s = store.sessions.create({
+      name: 'Adv',
+      templateId: null,
+      templateSnapshot: 'snap',
+      openingMessage: 'hi',
+      providerId: null,
+      model: 'custom-model',
+      contextWindow: 1_000_000,
+      temperature: 0.7
+    })
+    const loaded = store.sessions.get(s.id)
+    expect(loaded?.contextWindow).toBe(1_000_000)
+    expect(loaded?.temperature).toBe(0.7)
   })
 
   it('completing a session stamps completed_at', () => {

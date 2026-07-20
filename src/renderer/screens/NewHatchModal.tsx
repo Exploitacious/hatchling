@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
+import { ChevronDown, ChevronRight } from 'lucide-react'
 import type { ModelInfo } from '@shared/types'
 import { Button, Field, Input, Modal, Select, Spinner, Textarea } from '@renderer/components/ui'
+import { formatTokens } from '@renderer/lib/format'
 import { useUiStore } from '@renderer/store/useUiStore'
 import { useProvidersStore } from '@renderer/store/useProvidersStore'
 import { useTemplatesStore } from '@renderer/store/useTemplatesStore'
@@ -42,6 +44,12 @@ export function NewHatchModal() {
   const [modelsError, setModelsError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
 
+  // Advanced options — all optional; defaults apply when left blank.
+  const [advancedOpen, setAdvancedOpen] = useState(false)
+  const [customModel, setCustomModel] = useState(false)
+  const [contextOverride, setContextOverride] = useState('')
+  const [temperature, setTemperature] = useState('')
+
   // Load data and reset the form each time the modal opens. Resetting
   // `submitting` here matters: the component never unmounts (it renders null
   // when closed), so a successful start would otherwise leave the flag stuck
@@ -52,6 +60,10 @@ export function NewHatchModal() {
     void loadTemplates()
     setName(defaultSessionName())
     setSubmitting(false)
+    setAdvancedOpen(false)
+    setCustomModel(false)
+    setContextOverride('')
+    setTemperature('')
   }, [open, loadProviders, loadTemplates])
 
   // Seed default template + provider once the lists are present.
@@ -110,6 +122,26 @@ export function NewHatchModal() {
 
   async function start(): Promise<void> {
     if (!canStart) return
+
+    // Validate advanced fields up front so bad values fail here, not mid-hatch.
+    const contextText = contextOverride.trim()
+    const parsedContext = contextText ? Number(contextText) : undefined
+    if (parsedContext !== undefined && (!Number.isFinite(parsedContext) || parsedContext <= 0)) {
+      toast.error('Context window must be a positive number of tokens.')
+      return
+    }
+    const tempText = temperature.trim()
+    const parsedTemp = tempText ? Number(tempText) : undefined
+    if (parsedTemp !== undefined && (!Number.isFinite(parsedTemp) || parsedTemp < 0)) {
+      toast.error('Temperature must be a number ≥ 0 (the provider validates its own range).')
+      return
+    }
+
+    // Effective window: the user's override wins; otherwise the provider-reported
+    // window for the selected model; otherwise unknown (app default, "estimated").
+    const reported = models.find((m) => m.id === model.trim())?.contextWindow
+    const resolvedWindow = parsedContext ?? reported
+
     setSubmitting(true)
     try {
       const session = await createSession({
@@ -117,7 +149,9 @@ export function NewHatchModal() {
         templateId,
         providerId,
         model: model.trim(),
-        openingMessage
+        openingMessage,
+        contextWindow: resolvedWindow !== undefined ? Math.floor(resolvedWindow) : undefined,
+        temperature: parsedTemp
       })
       close()
       navigate(`/sessions/${session.id}/chat`)
@@ -207,11 +241,11 @@ export function NewHatchModal() {
               <div className="flex h-10 items-center gap-2 text-sm text-hatch-muted">
                 <Spinner /> Loading models…
               </div>
-            ) : models.length > 0 ? (
+            ) : models.length > 0 && !customModel ? (
               <Select id="hatch-model" value={model} onChange={(e) => setModel(e.target.value)}>
                 {models.map((m) => (
                   <option key={m.id} value={m.id}>
-                    {m.id}
+                    {m.contextWindow ? `${m.id} · ${formatTokens(m.contextWindow)}` : m.id}
                   </option>
                 ))}
               </Select>
@@ -233,6 +267,67 @@ export function NewHatchModal() {
               onChange={(e) => setOpeningMessage(e.target.value)}
             />
           </Field>
+
+          <div>
+            <button
+              type="button"
+              className="flex items-center gap-1 text-xs font-medium text-hatch-muted transition-colors hover:text-hatch-text"
+              onClick={() => setAdvancedOpen((v) => !v)}
+              aria-expanded={advancedOpen}
+            >
+              {advancedOpen ? (
+                <ChevronDown className="h-3.5 w-3.5" />
+              ) : (
+                <ChevronRight className="h-3.5 w-3.5" />
+              )}
+              Advanced
+            </button>
+
+            {advancedOpen && (
+              <div className="mt-3 space-y-4 rounded-md border border-hatch-border bg-hatch-surface-2 p-4">
+                <label className="flex items-center gap-2 text-sm text-hatch-text">
+                  <input
+                    type="checkbox"
+                    checked={customModel}
+                    onChange={(e) => {
+                      setCustomModel(e.target.checked)
+                      if (e.target.checked) setModel('')
+                    }}
+                    className="h-4 w-4 accent-hatch-accent"
+                  />
+                  Enter a custom model id
+                </label>
+
+                <Field
+                  label="Context window override (tokens)"
+                  htmlFor="hatch-context"
+                  hint="Blank = the model's reported window, or the app default when unknown."
+                >
+                  <Input
+                    id="hatch-context"
+                    inputMode="numeric"
+                    value={contextOverride}
+                    onChange={(e) => setContextOverride(e.target.value)}
+                    placeholder="e.g. 1000000"
+                  />
+                </Field>
+
+                <Field
+                  label="Temperature"
+                  htmlFor="hatch-temperature"
+                  hint="Blank = provider default. Unsupported values are rejected by the provider."
+                >
+                  <Input
+                    id="hatch-temperature"
+                    inputMode="decimal"
+                    value={temperature}
+                    onChange={(e) => setTemperature(e.target.value)}
+                    placeholder="e.g. 0.7"
+                  />
+                </Field>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </Modal>
