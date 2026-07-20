@@ -162,6 +162,20 @@ no per-model context-window table (report the real window when the provider
 gives one, otherwise fall back to `DEFAULT_CONTEXT_WINDOW` and mark it
 "estimated").
 
+**Context-window discovery** (`providers/contextWindow.ts`, pure + unit-tested):
+each adapter probes what its provider's API actually reports — Anthropic's
+`max_input_tokens`; the OpenAI-compatible field variants seen in the wild
+(`context_length`, `context_window`, `max_model_len`, `max_context_length`,
+`top_provider.context_length`, `meta.n_ctx_train` — base OpenAI and some
+gateways report nothing); Ollama's arch-prefixed `model_info.*.context_length`
+via one `/api/show` call per model, where a failed probe never fails the
+listing. The resolved window is stored per session at creation (user override
+from the New Hatch Advanced options wins over the model-reported value), drives
+`session:usage` percent math in the engine, and falls back to
+`DEFAULT_CONTEXT_WINDOW` with `estimated: true` when nothing is known. Sessions
+may also carry an optional `temperature`; adapters forward it as-is and an
+unsupported value surfaces the provider's own error message.
+
 ## 6. Secret storage
 
 API keys never touch SQLite or the renderer. They are encrypted at rest and

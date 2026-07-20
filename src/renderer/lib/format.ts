@@ -18,6 +18,16 @@ export function formatBytes(bytes: number): string {
   return `${value.toFixed(value >= 10 || Number.isInteger(value) ? 0 : 1)} ${units[unit]}`
 }
 
+/** Compact token-count label, e.g. 128000 -> "128k", 1048576 -> "1M". */
+export function formatTokens(tokens: number): string {
+  if (tokens >= 1_000_000) {
+    const m = tokens / 1_000_000
+    return `${m >= 10 || Number.isInteger(m) ? Math.round(m) : m.toFixed(1)}M`
+  }
+  if (tokens >= 1000) return `${Math.round(tokens / 1000)}k`
+  return String(tokens)
+}
+
 /** Localized short date-time for a stored ISO timestamp. */
 export function formatDateTime(iso: string): string {
   const date = new Date(iso)

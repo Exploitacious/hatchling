@@ -90,7 +90,15 @@ export interface IpcEventMap {
   'chat:error': { sessionId: string; message: string; kind: LlmErrorKind }
   'files:changed': { sessionId: string; file: FileArtifact }
   'files:deleted': { sessionId: string; fileId: string; filename: string }
-  'session:usage': { sessionId: string; usage: TokenUsage; contextPercent: number | null }
+  'session:usage': {
+    sessionId: string
+    usage: TokenUsage
+    contextPercent: number | null
+    /** The window the percent was computed against (override, reported, or default). */
+    contextWindow: number
+    /** True when no real window is known and the default was used. */
+    estimated: boolean
+  }
 }
 
 export type IpcChannel = keyof IpcRequestMap

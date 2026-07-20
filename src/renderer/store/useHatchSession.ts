@@ -23,6 +23,10 @@ export interface HatchSession {
   status: HatchStatus
   usage: TokenUsage
   contextPercent: number | null
+  /** Effective window from the engine (override/reported/default); null before the first usage event. */
+  contextWindow: number | null
+  /** True when the engine fell back to the default window (no real one known). */
+  estimated: boolean
   streaming: StreamingMessage | null
   notice: string | null
   error: string | null
@@ -49,6 +53,8 @@ export function useHatchSession(sessionId: string): HatchSession {
   const [status, setStatus] = useState<HatchStatus>('idle')
   const [usage, setUsage] = useState<TokenUsage>({ input: 0, output: 0, total: 0 })
   const [contextPercent, setContextPercent] = useState<number | null>(null)
+  const [contextWindow, setContextWindow] = useState<number | null>(null)
+  const [estimated, setEstimated] = useState(true)
   const [streaming, setStreaming] = useState<StreamingMessage | null>(null)
   const [notice, setNotice] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -109,6 +115,8 @@ export function useHatchSession(sessionId: string): HatchSession {
         if (p.sessionId !== sessionId) return
         setUsage(p.usage)
         setContextPercent(p.contextPercent)
+        setContextWindow(p.contextWindow)
+        setEstimated(p.estimated)
       })
     ]
 
@@ -159,6 +167,8 @@ export function useHatchSession(sessionId: string): HatchSession {
     status,
     usage,
     contextPercent,
+    contextWindow,
+    estimated,
     streaming,
     notice,
     error,

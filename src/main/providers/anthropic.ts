@@ -14,6 +14,7 @@ import { TOOL_DEFINITIONS } from '@shared/constants'
 import type { AdapterConfig } from './factory'
 import { LlmError, isAbortError, toLlmError } from './errors'
 import { normalizeToolCall, toAnthropicTools } from './toolFormat'
+import { probeAnthropicContextWindow } from './contextWindow'
 
 const DEFAULT_MAX_TOKENS = 4096
 
@@ -152,7 +153,13 @@ export class AnthropicProvider implements LlmProvider {
   async listModels(): Promise<ModelInfo[]> {
     try {
       const page = await this.client.models.list()
-      return page.data.map((m) => ({ id: m.id, provider: 'Anthropic' }))
+      return page.data.map((m) => ({
+        id: m.id,
+        provider: 'Anthropic',
+        // The models API reports max_input_tokens (the input context window);
+        // probe the raw object since SDK types may lag the API.
+        contextWindow: probeAnthropicContextWindow(m)
+      }))
     } catch (err) {
       throw toLlmError(err)
     }
@@ -177,7 +184,8 @@ export class AnthropicProvider implements LlmProvider {
         max_tokens: DEFAULT_MAX_TOKENS,
         system: toAnthropicSystem(params.messages),
         messages: toAnthropicMessages(params.messages),
-        tools: toAnthropicTools(params.tools ?? TOOL_DEFINITIONS)
+        tools: toAnthropicTools(params.tools ?? TOOL_DEFINITIONS),
+        ...(params.temperature !== undefined ? { temperature: params.temperature } : {})
       }
       const stream = this.client.messages.stream(request as unknown as AnthropicStreamParams, {
         signal: params.signal

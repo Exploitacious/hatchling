@@ -12,6 +12,7 @@ import { TOOL_DEFINITIONS } from '@shared/constants'
 import type { AdapterConfig } from './factory'
 import { LlmError, isAbortError, kindFromHttpStatus, toLlmError } from './errors'
 import { normalizeToolCall, toOpenAiTools } from './toolFormat'
+import { probeOllamaContextWindow } from './contextWindow'
 
 const DEFAULT_BASE_URL = 'http://localhost:11434'
 
@@ -112,7 +113,28 @@ export class OllamaProvider implements LlmProvider {
       const res = await fetch(`${this.baseUrl}/api/tags`)
       if (!res.ok) throw new LlmError(kindFromHttpStatus(res.status), `Ollama returned ${res.status}`)
       const body = (await res.json()) as OllamaTagsResponse
-      return (body.models ?? []).map((m) => ({ id: m.name ?? m.model ?? '', provider: 'Ollama' }))
+      const models = (body.models ?? []).map((m) => ({
+        id: m.name ?? m.model ?? '',
+        provider: 'Ollama'
+      }))
+      // /api/tags carries no context info — /api/show does, one call per model
+      // (local server, small lists). A failed probe just leaves the window
+      // unknown; it never fails the listing.
+      return Promise.all(
+        models.map(async (m): Promise<ModelInfo> => {
+          try {
+            const show = await fetch(`${this.baseUrl}/api/show`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ model: m.id })
+            })
+            if (!show.ok) return m
+            return { ...m, contextWindow: probeOllamaContextWindow(await show.json()) }
+          } catch {
+            return m
+          }
+        })
+      )
     } catch (err) {
       throw toLlmError(err)
     }
@@ -163,7 +185,10 @@ export class OllamaProvider implements LlmProvider {
         model: params.model,
         messages: toOllamaMessages(params.messages),
         tools: toOpenAiTools(params.tools ?? TOOL_DEFINITIONS),
-        stream: true
+        stream: true,
+        ...(params.temperature !== undefined
+          ? { options: { temperature: params.temperature } }
+          : {})
       }
       const res = await fetch(`${this.baseUrl}/api/chat`, {
         method: 'POST',

@@ -88,7 +88,9 @@ export function buildHandlers(ctx: IpcContext): IpcHandlers {
         templateSnapshot: template.content,
         openingMessage: input.openingMessage ?? template.openingMessage,
         providerId: input.providerId,
-        model: input.model
+        model: input.model,
+        contextWindow: input.contextWindow ?? null,
+        temperature: input.temperature ?? null
       })
     },
     'sessions:update': (input) => store.sessions.update(input),

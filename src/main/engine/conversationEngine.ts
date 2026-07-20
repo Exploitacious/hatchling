@@ -39,8 +39,8 @@ function asString(value: unknown): string {
   return typeof value === 'string' ? value : ''
 }
 
-function contextPercent(usage: TokenUsage): number {
-  return Math.min(100, Math.round((usage.total / DEFAULT_CONTEXT_WINDOW) * 100))
+function contextPercent(usage: TokenUsage, contextWindow: number): number {
+  return Math.min(100, Math.round((usage.total / contextWindow) * 100))
 }
 
 /**
@@ -128,6 +128,7 @@ export class ConversationEngine {
           model: session.model,
           messages,
           tools: [...TOOL_DEFINITIONS],
+          temperature: session.temperature ?? undefined,
           signal: controller.signal,
           onEvent: (event) => this.relayStreamEvent(session.id, messageId, event)
         })
@@ -276,7 +277,17 @@ export class ConversationEngine {
   private trackUsage(sessionId: string, usage: TokenUsage): void {
     // Store the latest call's usage as the current context size (not cumulative).
     this.store.sessions.setTokenUsage(sessionId, usage)
-    this.emit('session:usage', { sessionId, usage, contextPercent: contextPercent(usage) })
+    // Percent against the session's resolved window; fall back to the default
+    // and mark it estimated when no window is known.
+    const known = this.store.sessions.get(sessionId)?.contextWindow ?? null
+    const effective = known ?? DEFAULT_CONTEXT_WINDOW
+    this.emit('session:usage', {
+      sessionId,
+      usage,
+      contextPercent: contextPercent(usage, effective),
+      contextWindow: effective,
+      estimated: known === null
+    })
   }
 
   private resolveProvider(session: Session): LlmProvider {

@@ -160,7 +160,11 @@ export function ChatScreen() {
 
   const busy = isBusy(hatch.status)
   const model = hatch.session?.model ?? '—'
-  const percent = hatch.contextPercent ?? Math.min(100, Math.round((hatch.usage.total / DEFAULT_CONTEXT_WINDOW) * 100))
+  // Effective window: latest engine report, else the session's resolved value,
+  // else the default (labeled estimated).
+  const windowTokens = hatch.contextWindow ?? hatch.session?.contextWindow ?? DEFAULT_CONTEXT_WINDOW
+  const windowEstimated = hatch.contextWindow !== null ? hatch.estimated : hatch.session?.contextWindow == null
+  const percent = hatch.contextPercent ?? Math.min(100, Math.round((hatch.usage.total / windowTokens) * 100))
   const sortedFiles = useMemo(
     () => [...hatch.files].sort((a, b) => Number(Boolean(a.deletedAt)) - Number(Boolean(b.deletedAt))),
     [hatch.files]
@@ -283,7 +287,8 @@ export function ChatScreen() {
       <div className="flex items-center justify-between gap-4 border-t border-hatch-border bg-hatch-surface px-4 py-2 text-xs text-hatch-muted">
         <div className="flex items-center gap-2">
           <span>
-            Tokens: {compact(hatch.usage.total)} / {compact(DEFAULT_CONTEXT_WINDOW)} ({percent}%)
+            Tokens: {compact(hatch.usage.total)} / {compact(windowTokens)}
+            {windowEstimated ? ' est.' : ''} ({percent}%)
           </span>
           <span className="flex items-center gap-0.5" aria-hidden>
             {Array.from({ length: 12 }, (_, i) => (

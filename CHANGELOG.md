@@ -30,6 +30,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Live context-window discovery: model pickers now show each model's reported
+  window (e.g. `deepseek-v4 · 128k`) when the provider's API exposes one —
+  Anthropic `max_input_tokens`, OpenRouter/Groq/vLLM/LM Studio-style list
+  fields, and Ollama via `/api/show`. No hardcoded per-model table; unknown
+  stays "estimated" against the 128k default.
+- **Advanced** options in New Hatch: context-window override, sampling
+  temperature, and custom model-id entry (even when the provider's list loads).
+  All optional — blank keeps provider/app defaults. The token meter now runs
+  against the session's real window, and unsupported values fail with the
+  provider's own error message.
 - Second built-in template, **The Interview**: a bot-driven, introspection-first
   hatch. The model audits its own strengths and interviews the user in depth to
   design the working relationship, rather than the user leading. Ships alongside
