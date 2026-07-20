@@ -8,6 +8,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Tightened **The Interview** by ~45% and rebalanced it for weaker models:
+  synthesis over interrogation (observations, hypotheses, and honest takes drive
+  the conversation, with license to challenge and to be wrong out loud),
+  operating-model discovery (tradeoffs, autonomy vs. approval, trust, and the
+  one real constraint), energy-matching that keeps the model's own lens, and a
+  friendlier opening epigraph. Deflection routing ("make it about the bot")
+  hardened after adversarial review predicted weak-model regressions.
+
 - Rewrote **The Interview** built-in around a spotlight inversion: the model's
   self-assessment moves backstage (it steers which questions occur to the model,
   and is never conversation material), the human becomes the entire subject, and
