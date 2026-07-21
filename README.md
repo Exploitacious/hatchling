@@ -7,6 +7,7 @@
 
 
 **It's a personality forge**
+
 **You chat with any model and as you talk, it writes files:**
 `SOUL.md`, `IDENTITY.md`, `USER.md`, plus whatever else the two of you
 decide the agent needs. When you're done, you can export the files and
