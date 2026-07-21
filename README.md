@@ -6,8 +6,10 @@
 > of the conversation between you and your AI model provider — keep it that way.
 
 
-This A simple desktop app for creating AI agent personalities through
-conversation! You chat with any model and as you talk, it writes files:
+This is a simple desktop app for creating AI agent personalities through
+conversation. It is built as an app for obvious privacy and security reasons.
+
+**You chat with any model and as you talk, it writes files:**
 `SOUL.md`, `IDENTITY.md`, `USER.md`, plus whatever else the two of you
 decide the agent needs. When you're done, you can export the files and
 take them to wherever your agent's forever home.
