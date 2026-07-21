@@ -2,16 +2,18 @@
 
 > **This is a public repository.** Do not commit API keys, passwords, tokens,
 > internal URLs, or any credentials. Hatchling stores API keys in your OS
-> keychain, never in the repo — keep it that way.
+> keychain or as an encrypted file, never in the repo, and is never sent outside
+> of the conversation between you and your AI model provider — keep it that way.
 
-A simple desktop app for creating AI agent personalities through
-conversation. You chat with a model and as you talk, it writes the files:
+
+This A simple desktop app for creating AI agent personalities through
+conversation! You chat with any model and as you talk, it writes files:
 `SOUL.md`, `IDENTITY.md`, `USER.md`, plus whatever else the two of you
-decide the agent needs. When you're done, you export the files and take them
-wherever your agent will live.
+decide the agent needs. When you're done, you can export the files and
+take them to wherever your agent's forever home.
 
 It's a complete personality forge. It's also a great way to test drive AI models before
-committing them to driving a whole agent on a dedicated machine.
+committing them to driving a whole, independent agent on a dedicated machine.
 
 
 <img width="1867" height="1481" alt="image" src="https://github.com/user-attachments/assets/5520f3fe-b100-447b-83bc-b74b605954d2" />
