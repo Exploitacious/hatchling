@@ -12,8 +12,8 @@ conversation! You chat with any model and as you talk, it writes files:
 decide the agent needs. When you're done, you can export the files and
 take them to wherever your agent's forever home.
 
-It's a complete personality forge. It's also a great way to test drive AI models before
-committing them to driving a whole, independent agent on a dedicated machine.
+**It's a complete personality forge and a great way to test drive AI models before
+committing them to driving a whole, independent agent on a dedicated machine**
 
 
 <img width="1867" height="1481" alt="image" src="https://github.com/user-attachments/assets/5520f3fe-b100-447b-83bc-b74b605954d2" />
