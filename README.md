@@ -4,15 +4,18 @@
 > internal URLs, or any credentials. Hatchling stores API keys in your OS
 > keychain, never in the repo — keep it that way.
 
-A local-first desktop app for creating AI agent personalities through
-conversation. You chat with a model, and as you talk it writes the personality
-files — `SOUL.md`, `IDENTITY.md`, `USER.md`, and whatever else the two of you
+A simple desktop app for creating AI agent personalities through
+conversation. You chat with a model and as you talk, it writes the files:
+`SOUL.md`, `IDENTITY.md`, `USER.md`, plus whatever else the two of you
 decide the agent needs. When you're done, you export the files and take them
-wherever your agent lives.
+wherever your agent will live.
 
-It's not a chatbot. It's a personality forge.
+It's a complete personality forge. It's also a great way to test drive AI models before
+committing them to driving a whole agent on a dedicated machine.
 
----
+
+<img width="1867" height="1481" alt="image" src="https://github.com/user-attachments/assets/5520f3fe-b100-447b-83bc-b74b605954d2" />
+
 
 ## Why
 
@@ -20,8 +23,8 @@ Some agent frameworks bury this "hatching" ritual inside a terminal wizard that
 needs a full install, a running gateway, and careful workspace state. But the
 actual magic — a conversation that produces a coherent set of personality files
 — is model-agnostic and infrastructure-independent. Hatchling extracts that
-magic into a clean, cross-platform app that talks to whatever model you point it
-at and hands you plain markdown files at the end.
+magic into a clean, cross-platform app that simulates the experience to whatever
+model you point it at, and hands you plain markdown files in the end.
 
 ## How it works
 
@@ -30,9 +33,9 @@ at and hands you plain markdown files at the end.
      the bot wakes up as a newborn and you figure out who it is together.
    - **The Interview** — the bot leads, and the spotlight stays on *you*. It
      interviews you in depth about your world and quietly shapes itself into the
-     partner you actually need. Different models run a different interview.
-2. **Pick a model** — any provider you've configured, or the built-in offline
-   **Mock** model that needs no key.
+     partner you actually need. Warning: may be a bit uncomfortable and truth-revealing.
+2. **Pick a model** — plug in any OpenAI-compatible provider (I like Opencode)
+   **Mock** testing environment "model" that needs no key.
 3. **Chat** — the bot asks who it is and who you are, and writes files as you go.
    A live panel shows each file as it's created or updated.
 4. **Review & edit** — read and tweak the generated files in-app.
@@ -83,7 +86,7 @@ Windows (installer + portable), macOS (dmg), and Linux (AppImage + deb).
 > Windows SmartScreen → "More info" → "Run anyway"; macOS → right-click the app
 > → "Open".
 
-## Requirements
+## Development Requirements
 
 - **Node.js 20+** and **npm** (for building from source).
 - A native toolchain for `better-sqlite3` (build-essential / Xcode CLT / MSVC
