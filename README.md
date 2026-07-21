@@ -49,7 +49,11 @@ formulas before committing them to a whole, independent agent, on a dedicated bo
 5. **Review & edit** — read and tweak the generated files in-app.
 6. **Export** — download individual files, a `.zip`, or save the whole set to a
    folder. They're plain markdown; drop them into any agent framework.
-   <img width="926" height="466" alt="image" src="https://github.com/user-attachments/assets/e007bdf3-c517-494f-ab6e-9b56ba9106c9" />
+
+
+<img width="1891" height="1391" alt="image" src="https://github.com/user-attachments/assets/6d9d820d-e87f-4006-9db4-32f1af8a6127" />
+<img width="1903" height="1399" alt="image" src="https://github.com/user-attachments/assets/c7127fb4-e743-474a-92af-71772c46f069" />
+
 
 
 ## Provider-agnostic by design
