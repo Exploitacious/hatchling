@@ -6,7 +6,7 @@
 > of the conversation between you and your AI model provider — keep it that way.
 
 
-**Bot Hatching like it's a personality forge.**
+**Hatching Bots like it's a personality forge**
 
 **Chat with the AI model and it will write its agent files:**
 `SOUL.md`, `IDENTITY.md`, `USER.md`, plus whatever else the two of you
