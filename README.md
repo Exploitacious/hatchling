@@ -6,7 +6,7 @@
 > of the conversation between you and your AI model provider — keep it that way.
 
 
-**It's a personality forge**
+**It's a personality forge.**
 
 **You chat with any model and as you talk, it writes files:**
 `SOUL.md`, `IDENTITY.md`, `USER.md`, plus whatever else the two of you
@@ -21,7 +21,7 @@ It is built as an app for obvious security and privacy reasons.
 
 ## Why
 
-Agent frameworks bury this "hatching" ritual inside a terminal wizard that
+Agent frameworks bury this "bot hatching" ritual inside a terminal wizard that
 needs a full install, a running gateway, and careful workspace state. But the
 actual magic — a conversation that produces a coherent set of personality files
 — is model-agnostic and infrastructure-independent. Hatchling extracts that
