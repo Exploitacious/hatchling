@@ -10,7 +10,7 @@
 
 **Chat with the AI model and it will write its agent files:**
 `SOUL.md`, `IDENTITY.md`, `USER.md`, plus whatever else the two of you
-come up with. Quickly and easily create an entire agent personality through conversation with the agent, not a proxy.
+come up with. Quickly and easily create an entire agent personality through conversation with the agent.
 When you're done, you can export the files and take them to your new agent's forever home. It is built as an app
 for obvious security and privacy reasons.
 
