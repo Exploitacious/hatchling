@@ -6,14 +6,13 @@
 > of the conversation between you and your AI model provider — keep it that way.
 
 
-**It's a personality forge.**
+**Bot Hatching like it's a personality forge.**
 
-**You chat with any model and as you talk, it writes files:**
+**Chat with the AI model and it will write its agent files:**
 `SOUL.md`, `IDENTITY.md`, `USER.md`, plus whatever else the two of you
-decide the agent needs. When you're done, you can export the files and
-take them to wherever your agent's forever home. It's simply a simple
-desktop app for creating AI agent personalities through conversation.
-It is built as an app for obvious security and privacy reasons.
+come up with. Quickly and easily create an entire agent personality through conversation with the agent, not a proxy.
+When you're done, you can export the files and take them to your new agent's forever home. It is built as an app
+for obvious security and privacy reasons.
 
 
 <img width="1867" height="1481" alt="image" src="https://github.com/user-attachments/assets/5520f3fe-b100-447b-83bc-b74b605954d2" />
