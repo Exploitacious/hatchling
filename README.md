@@ -41,13 +41,11 @@ formulas before committing them to a whole, independent agent, on a dedicated bo
      <img width="1563" height="331" alt="image" src="https://github.com/user-attachments/assets/0c9f143c-2355-40ff-bebd-5c6fcbe9333d" />
         
 2. **Pick a model** — plug in any OpenAI-compatible provider (I like OpenCode ;)
-   **Mock** testing environment "model" that needs no key.
-   <img width="1060" height="364" alt="image" src="https://github.com/user-attachments/assets/ba96644f-65fa-499f-81dc-00591716c618" />
-   
-4. **Chat** — the bot asks who it is and who you are, and writes files as you go.
+   **Mock** testing environment "model" that needs no key.   
+3. **Chat** — the bot asks who it is and who you are, and writes files as you go.
    A live panel shows each file as it's created or updated.
-5. **Review & edit** — read and tweak the generated files in-app.
-6. **Export** — download individual files, a `.zip`, or save the whole set to a
+4. **Review & edit** — read and tweak the generated files in-app.
+5. **Export** — download individual files, a `.zip`, or save the whole set to a
    folder. They're plain markdown; drop them into any agent framework.
 
 
