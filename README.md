@@ -90,7 +90,7 @@ doesn't support fail with the provider's own error message, not silently.
 
 Grab the installer for your platform from the
 [**Releases page**](https://github.com/Exploitacious/hatchling/releases) —
-Windows (installer + portable), macOS (dmg), and Linux (AppImage + deb).
+Windows (installer + [portable](https://github.com/Exploitacious/hatchling/releases/download/v1.0.0/Hatchling-1.0.0-portable-x64.exe), macOS (dmg), and Linux (AppImage + deb).
 
 > The binaries are unsigned, so the first launch shows the usual warnings:
 > Windows SmartScreen → "More info" → "Run anyway"; macOS → right-click the app
