@@ -12,8 +12,7 @@ conversation! You chat with any model and as you talk, it writes files:
 decide the agent needs. When you're done, you can export the files and
 take them to wherever your agent's forever home.
 
-**It's a complete personality forge and a great way to test drive AI models before
-committing them to driving a whole, independent agent on a dedicated machine**
+**It's a personality forge**
 
 
 <img width="1867" height="1481" alt="image" src="https://github.com/user-attachments/assets/5520f3fe-b100-447b-83bc-b74b605954d2" />
@@ -21,12 +20,15 @@ committing them to driving a whole, independent agent on a dedicated machine**
 
 ## Why
 
-Some agent frameworks bury this "hatching" ritual inside a terminal wizard that
+Agent frameworks bury this "hatching" ritual inside a terminal wizard that
 needs a full install, a running gateway, and careful workspace state. But the
 actual magic — a conversation that produces a coherent set of personality files
 — is model-agnostic and infrastructure-independent. Hatchling extracts that
 magic into a clean, cross-platform app that simulates the experience to whatever
 model you point it at, and hands you plain markdown files in the end.
+
+I have found this it is also a fantastic way to test-drive AI models and bootstrap
+formulas before committing them to a whole, independent agent, on a dedicated box.
 
 ## How it works
 
