@@ -2,7 +2,7 @@
 
 > The authoritative design document for Hatchling. Everything else defers to
 > this file for *how the system is built and why*. For what it is, see
-> [`README.md`](README.md); for conventions, see [`CLAUDE.md`](CLAUDE.md).
+> [`README.md`](README.md); for conventions, see [`AGENTS.md`](AGENTS.md).
 
 ---
 
@@ -298,6 +298,6 @@ Kept out of v1 by design, noted here so the shape doesn't surprise later:
 ## See also
 
 - [`README.md`](README.md) — what the project is and how to run it.
-- [`CLAUDE.md`](CLAUDE.md) — conventions and workflow.
+- [`AGENTS.md`](AGENTS.md) — conventions and workflow.
 - [`src/shared/`](src/shared) — the types, IPC contract, and constants this
   document describes.

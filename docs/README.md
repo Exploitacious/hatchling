@@ -4,7 +4,7 @@
 > that don't belong in one of the four canonical root files live here.
 >
 > Authoritative pointers: [`ARCHITECTURE.md`](../ARCHITECTURE.md) (the spec /
-> rules), [`README.md`](../README.md) (what exists), [`CLAUDE.md`](../CLAUDE.md)
+> rules), [`README.md`](../README.md) (what exists), [`AGENTS.md`](../AGENTS.md)
 > (how we work). This file is the map; those are the sources of truth.
 
 ---
@@ -25,7 +25,7 @@ opens with a one-line "what this is" and closes with a "see also".
 
 This repo follows a lightweight documentation kata:
 
-1. The root holds only canonical entry points: `README.md`, `CLAUDE.md`,
+1. The root holds only canonical entry points: `README.md`, `AGENTS.md`,
    `ARCHITECTURE.md`, `CHANGELOG.md`.
 2. `docs/` holds every deep-dive.
 3. Component-specific docs live next to their code.
@@ -38,4 +38,4 @@ This repo follows a lightweight documentation kata:
 
 - [`../ARCHITECTURE.md`](../ARCHITECTURE.md) — system design and decisions.
 - [`../README.md`](../README.md) — what the project is and how to run it.
-- [`../CLAUDE.md`](../CLAUDE.md) — conventions and workflow.
+- [`../AGENTS.md`](../AGENTS.md) — conventions and workflow.
