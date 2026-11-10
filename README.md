@@ -161,7 +161,7 @@ Installers are written to `release/`.
 | `npm run test:coverage`   | Tests with coverage                           |
 | `npm run package`         | Build installers for the current platform     |
 
-See [`CLAUDE.md`](CLAUDE.md) for conventions and [`ARCHITECTURE.md`](ARCHITECTURE.md)
+See [`AGENTS.md`](AGENTS.md) for conventions and [`ARCHITECTURE.md`](ARCHITECTURE.md)
 for the system design.
 
 ## Tech stack
